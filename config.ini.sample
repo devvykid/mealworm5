@@ -1,0 +1,10 @@
+; config.ini
+
+[FACEBOOK]
+VERIFY_TOKEN =
+ACCESS_TOKEN =
+
+[LUIS]
+LUIS_KEY =
+LUIS_URI =
+LUIS_APP_ID =
