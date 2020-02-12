@@ -1,6 +1,8 @@
 # 급식봇 API 서버 버전 5
-
-<메신저 버튼> <라이선스 뱃지>
+![Try it out on Facebook Messenger](https://img.shields.io/badge/Messenger-Try%20it%20out-%230078FF?style=for-the-badge&logo=Messenger)
+![GitHub](https://img.shields.io/github/license/hassium-io/mealworm5?style=flat-square)
+  
+<img src="https://user-images.githubusercontent.com/30792695/74304041-2f7bc200-4d9f-11ea-93d8-d6bfee983176.png" alt="급식봇 배너" style="max-width: 300px">
 
 ### Disclaimer
 당신 (그니까 너님) 이 급식봇을 사용했는데 급식이 맛없어서 토했다는가 또는 굶어 죽었다는가 등에 대해서는 급식봇에서는 일절 책임지지 않습니다. 당신의 어머니께서 말씀하셨듯이, 그런 거는 좀 알아서 해결하세요. (뭐 이슈를 넣는 거는 괜찮습니다만)
