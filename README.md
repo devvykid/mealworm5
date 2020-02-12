@@ -1,6 +1,6 @@
 # 급식봇 API 서버 버전 5
-![Try it out on Facebook Messenger](https://img.shields.io/badge/Messenger-Try%20it%20out-%230078FF?style=for-the-badge&logo=Messenger)
-![GitHub](https://img.shields.io/github/license/hassium-io/mealworm5?style=flat-square)
+![Try it out on Facebook Messenger](https://img.shields.io/badge/Messenger-Try%20it%20out-%230078FF?style=for-the-badge&logo=Messenger&logoColor=%23ffffff)
+![GitHub](https://img.shields.io/badge/LICENSE-WTFPL-blueviolet?style=for-the-badge)
   
 <img src="https://user-images.githubusercontent.com/30792695/74304041-2f7bc200-4d9f-11ea-93d8-d6bfee983176.png" alt="급식봇 배너" width="70%">
 
