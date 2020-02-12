@@ -2,7 +2,7 @@
 ![Try it out on Facebook Messenger](https://img.shields.io/badge/Messenger-Try%20it%20out-%230078FF?style=for-the-badge&logo=Messenger)
 ![GitHub](https://img.shields.io/github/license/hassium-io/mealworm5?style=flat-square)
   
-<img src="https://user-images.githubusercontent.com/30792695/74304041-2f7bc200-4d9f-11ea-93d8-d6bfee983176.png" alt="급식봇 배너" style="max-width: 300px">
+<img src="https://user-images.githubusercontent.com/30792695/74304041-2f7bc200-4d9f-11ea-93d8-d6bfee983176.png" alt="급식봇 배너" width="70%">
 
 ### Disclaimer
 당신 (그니까 너님) 이 급식봇을 사용했는데 급식이 맛없어서 토했다는가 또는 굶어 죽었다는가 등에 대해서는 급식봇에서는 일절 책임지지 않습니다. 당신의 어머니께서 말씀하셨듯이, 그런 거는 좀 알아서 해결하세요. (뭐 이슈를 넣는 거는 괜찮습니다만)
@@ -46,4 +46,4 @@
 ## 라이선스
 mealworm5 코드는 [WTFPL](http://www.wtfpl.net/) (Do What The Fuck You Want To Public License) 로 배포됩니다. 왜냐고요? 재미있잖습니까... 허허허
 
-###### Made with ♥️ by <하슘로고>
+###### Made with ♥️ by <img src="https://user-images.githubusercontent.com/30792695/74304401-3c4ce580-4da0-11ea-9631-42f303e8c1a9.png" alt="Hassium" height="20rem">
