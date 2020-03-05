@@ -41,11 +41,23 @@ class User:
             else:
                 return
 
-    def get_data(self):
+    def get_last_school(self):
+        return ''
+        # school 객체 반환
+
+    def save_last_school(self, school):
+        # school 객체를 Serialize 해서 디비에 저장
+        pass
+
+    def save_temp_schools_list(self, schools):
+        pass
+
+    def get_temp_schools_list(self):
         pass
 
     def send_message(self, message):
         pass
+
 
     def typing(self):
         pass

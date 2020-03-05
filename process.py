@@ -3,6 +3,7 @@ from message import Message
 from nlp import LuisController, DateProcessing
 from logger import Logger
 from template import Templates
+from school import School, Neis
 
 
 class Processing:
@@ -71,21 +72,13 @@ class Processing:
 
         # Intent: 버그 신고하기
         elif intent == 'Action.Report':
-            fb.send_text_message(recipient_id, '아래 버튼을 눌러서 신고해주세요!')
-            fb.send_cards(recipient_id, [
-                {
-                    "title": "버그 신고하기",
-                    "image_url": "https://mw.api.oror.kr/static/siren.png",
-                    "subtitle": "아래 버튼을 클릭하면 버그 신고 양식으로 연결됩니다. 감사합니다.",
-                    "buttons": [
-                        {
-                            "type": "web_url",
-                            "url": "https://mw.api.oror.kr/support/bugreport?id=%s" % recipient_id,
-                            "title": "버그 잡으러 가기"
-                        }
-                    ]
-                }
-            ], 'DEFAULT')
+            msg = Message('TEXT', '아래 버튼을 눌러서 신고해주세요!')
+            user.send_message(msg)
+
+            bug_report_card = Templates.Cards.bug_report
+            bug_report_card['buttons'][0]['url'] += user.uid
+            msg = Message('CARD', bug_report_card)
+            user.send_message(msg)
 
             return
 
@@ -98,6 +91,54 @@ class Processing:
             pass
         # Intent: 급식
         elif intent == 'Communication.Request.Meal':
+            entities = {}
+            for r in luis.result['entities']:
+                entities[r['entity'].strip()] = {
+                    "type": r['type'],
+                    "value": None   # To be filled
+                }
+                try:
+                    entities[r['entity']]['value'] = r['resolution']['values'][0]
+                except KeyError:
+                    pass
+
+            if entities.get('SchoolName') or user.Database.get_last_school():
+                if entities.get('SchoolName'):  # 학교명을 직접 지정한 경우
+                    neis = Neis()
+                    try:
+                        school_list = neis.search_school(entities['SchoolName']['value'])
+                    except ValueError:
+                        msg = Message('TEXT',
+                                      '학교 이름이 너무 짧아요. 다시 시도해주세요.',
+                                      Templates.QuickReplies.after_user_error)
+                        user.send_message(msg)
+                        return
+
+                    if len(school_list) == 0:
+                        msg = Message('TEXT',
+                                      '학교 \'%s\'를 찾을 수 없어요.' % entities['SchoolName']['value'],
+                                      Templates.QuickReplies.after_user_error)
+                        user.send_message(msg)
+                        return
+                    elif len(school_list) > 1:
+
+
+            else:   # 학교명을 생략한 경우 -> 디비에 저장된 마지막 요청 학교를 가져온다.
+                    sch = user.get_last_school()
+
+
+
+
+
+
+            else:
+
+
+
+
+
+
+
             pass
 
         else:
@@ -107,7 +148,8 @@ class Processing:
 
         return
 
-    def process_postback(self, user, payload):
+    @staticmethod
+    def process_postback(user, payload):
         user.typing()
 
         # 페이로드 분기
@@ -135,6 +177,8 @@ class Processing:
             return
 
         elif payload == 'INTRO_MORE':
+            msg = Message('CARD', Templates.Cards.intro_features)
+            user.send_message(msg)
             # 기능에 대해 더 알려준다
             pass
 
