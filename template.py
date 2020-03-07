@@ -106,6 +106,15 @@ class Templates:
             }
         ]
 
+        after_system_error = [
+            {
+                "content_type": "text",
+                'title': '🚨버그 신고하기',
+                'payload': '',
+                'image_url': ''
+            }
+        ]
+
     class Cards:
         intro_features = [
             {

@@ -44,3 +44,8 @@ class LuisController:
 class DateProcessing:
     def __init__(self):
         pass
+
+    @staticmethod
+    def text_to_date(entities):
+        pass
+
