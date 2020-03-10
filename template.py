@@ -1,6 +1,3 @@
-import random
-
-
 class Templates:
     class QuickReplies:
         after_action = [
@@ -13,7 +10,7 @@ class Templates:
             {
                 "content_type": "text",
                 'title': '📚도움말 보기',
-                'payload': '',
+                'payload': 'HELP_MEAL',
                 'image_url': ''
             },
             {
@@ -94,6 +91,30 @@ class Templates:
             }
         ]
 
+        after_user_error = [
+            {
+                "content_type": "text",
+                'title': '📚도움말 보기',
+                'payload': 'HELP_MEAL',
+                'image_url': ''
+            },
+            {
+                "content_type": "text",
+                'title': '🚨버그 신고하기',
+                'payload': '',
+                'image_url': ''
+            }
+        ]
+
+        after_system_error = [
+            {
+                "content_type": "text",
+                'title': '🚨버그 신고하기',
+                'payload': '',
+                'image_url': ''
+            }
+        ]
+
     class Cards:
         intro_features = [
             {
@@ -123,6 +144,34 @@ class Templates:
                         "type": "postback",
                         "title": "[🖖 곧 찾아옵니다!]",
                         "payload": ""
+                    }
+                ]
+            }
+        ]
+
+        bug_report = [{
+            "title": "버그 신고하기",
+            "image_url": "https://mw.api.oror.kr/static/siren.png",
+            "subtitle": "아래 버튼을 클릭하면 버그 신고 양식으로 연결됩니다.",
+            "buttons": [
+                {
+                    "type": "web_url",
+                    "url": "https://mw.api.oror.kr/support/bugreport?id=",
+                    "title": "버그 잡으러 가기"
+                }
+            ]
+        }]
+
+        view_source = [
+            {
+                "title": "깃허브에서 소스 보기",
+                "image_url": "https://mw.api.oror.kr/static/github-universe.jpg",
+                "subtitle": "Github에서 급식봇의 소스 코드를 보실 수 있어요.",
+                "buttons": [
+                    {
+                        "type": "web_url",
+                        "url": "https://github.com/hassium-io/mealworm5",
+                        "title": "소스 코드 보기"
                     }
                 ]
             }

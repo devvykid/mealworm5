@@ -3,8 +3,8 @@ MEALWORM™ Server, version 5.
 
 (c) 2018-2020 JY Park. All rights reserved.
 
-For more information such as license,
-please refer to https://github.com/computerpark/mealworm5 .
+For more information,
+please refer to the link https://github.com/computerpark/mealworm5 .
 
 Thank you.
 """
