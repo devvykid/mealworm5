@@ -77,7 +77,7 @@ def webhook():
                         # 1-2-3. 첨부파일 등이 있는 메시지
                         if e['message'].get('attachments'):
                             m = Message('TEXT', ':)')
-                            user.send_message(m)
+                            user.send(m)
                             continue
 
             return {"result", "fuck yeah!"}
@@ -89,7 +89,7 @@ def webhook():
                 m = Message('TEXT', '죄송합니다, 급식봇에 처리되지 않은 오류가 발생했습니다.\n'
                                     '일시적인 오류인 경우, 다시 시도해 주세요. 계속적으로 오류가 발생하는 경우, '
                                     '아래의 \'버그 신고하기\' 기능을 이용해 신고해 주세요.\n%s' % str(e))
-                user.send_message(m)
+                user.send(m)
 
             except NameError:
                 # 유언 못남김

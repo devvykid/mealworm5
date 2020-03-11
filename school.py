@@ -16,6 +16,7 @@ class School:
         return
 
     def get_meal(self, date, mealtime):
+        # TODO: 경고: mealtime은 '텍스트' 입니다 (아님 None 이던가)
         pass
 
 
@@ -24,7 +25,7 @@ class Neis:
         pass
 
     def search_school(self, q):
-        # 과고 -> 과학고 등 처리
+        # 과고 -> 과학고 등 처리다
         if q.endswith('과고'):
             q = q.replace('과고', '과학고')
 
@@ -97,6 +98,11 @@ class Neis:
 
 
 class Meal:
-    def __init__(self, menus, allergies):
-        self.menus = []
-        self.allergies = []
+    def __init__(self, menus, allergies, mealtime):
+        self.menus = menus
+        self.allergies = allergies
+        self.mealtime = mealtime
+
+    def text(self):
+        # 급식이 없으면 None 을 리턴합니다.
+        return ''

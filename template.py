@@ -29,7 +29,7 @@ class Templates:
 
         after_meal = [
             {
-                'text': None,  # to be fulfilled
+                'text': '오늘 급식',
                 'payload': '',
                 'image_url': ''
             },

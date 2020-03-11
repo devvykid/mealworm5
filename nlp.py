@@ -46,6 +46,6 @@ class DateProcessing:
         pass
 
     @staticmethod
-    def text_to_date(entities):
+    def parse_date(entities):
         pass
 

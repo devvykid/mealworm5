@@ -47,7 +47,7 @@ class User:
                 return
 
     # Message 객체를 유저에게 보냅니다.
-    def send_message(self, msg):
+    def send(self, msg):
         # 기본 헤더 / 바디
         headers = {'content-type': 'application/json'}
         body = {
@@ -108,22 +108,33 @@ class User:
     def register(self):
         pass
 
-    # 여러개 학교가 중복으로 떠서 리트시 전 학교를 기억하기 위한 함수
-    def get_school_on_error(self, code):
-        # DB 조회
-
-        # 코드 일치하는거 찾아서 De-Serialize
-
-        # 리턴
-
+    # 마지막으로 성공한 학교 저장
+    def save_school(self, school):
+        # Parameter: school (School 객체)
         pass
 
-    def save_last_schools_on_error(self, school_list):
+    # 여러개 학교가 중복으로 떠서 리트시 전 학교를 기억하기 위한 함수
+    def save_request(self, school_list, date, mealtime):
+        # Parameters:
+        # - 학교 리스트 (School 객체)
+        # - 날짜 (Datetime 객체)
+        # - Mealtime
+
         # 지난 DB 삭제
 
         # School 객체 Serialize (JSON -> TEXT)
 
         # 디비에 저장
+
+        pass
+
+    def get_request(self, code):
+        # DB 조회
+
+        # 코드 일치하는거 찾아서 De-Serialize
+
+        # 리턴
+        # 형식: (School 객체, date, mealtime)
 
         pass
 
