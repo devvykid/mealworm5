@@ -13,6 +13,8 @@ from flask import Flask, request, jsonify, redirect, render_template
 import traceback
 import random
 import configparser
+import requests
+import json
 
 from bug import Bug
 from process import Processing
@@ -31,6 +33,50 @@ ps = Processing()
 @app.route('/')
 def hello_world():
     return '<code>make it ra1n</code>'
+
+
+@app.route('/old', methods=['GET', 'POST'])
+def old_deprecated():
+    # config.ini 읽어서 가져오기
+    cfg = configparser.ConfigParser()
+    cfg.read('config.ini')
+
+    if request.method == 'GET':
+        # Verification Test
+        if request.args.get("hub.verify_token") == cfg['FACEBOOK']['VERIFY_TOKEN']:
+            return request.args.get("hub.challenge")
+        else:
+            return 'Verification Failed!'
+
+    if request.method == 'POST':
+        try:
+            req = request.get_json()
+
+            for event in req['entry']:
+                for e in event['messaging']:    # 요청의 단위 시작
+                    if e.get('postback', {}).get('payload') or e.get('message'):
+                        headers = {'content-type': 'application/json'}
+                        body = {
+                            "recipient": {
+                                "id": e['sender']['id']
+                            },
+                            "message": {
+                                "text": "이 버전의 급식봇은 종료되었습니다. 급식봇5를 이용해 주세요!\n"
+                                        "https://facebook.com/mealworm5/"
+                            }
+                        }
+
+                        requests.post(
+                            "https://graph.facebook.com/v3.3/me/messages?access_token=" + cfg['FACEBOOK']['ACCESS_TOKEN'],
+                            data=json.dumps(body),
+                            headers=headers
+                        )
+        except Exception as e:
+            print("Fuck: {}".format(str(e)))
+
+        return 'Deprecated Request Processed.'
+
+
 
 
 @app.route('/webhook', methods=['GET', 'POST'])
@@ -90,6 +136,7 @@ def webhook():
                                     '일시적인 오류인 경우, 다시 시도해 주세요. 계속적으로 오류가 발생하는 경우, '
                                     '아래의 \'버그 신고하기\' 기능을 이용해 신고해 주세요.\n%s' % str(e))
                 user.send(m)
+                # 위에서 Lint 에러가 뜨는 것은 정상이다.
 
             except NameError:
                 # 유언 못남김

@@ -57,15 +57,7 @@ class Processing:
 
         # Intent: 버그 신고하기
         elif intent == 'Action.Report':
-            m = Message('TEXT', '아래 버튼을 눌러서 신고해주세요!')
-            user.send(m)
-
-            bug_report_card = Templates.Cards.bug_report
-            bug_report_card['buttons'][0]['url'] += user.uid
-            m = Message('CARD', bug_report_card)
-            user.send(m)
-
-            return
+            return self.process_postback(user, 'BUGREPORT')
 
         # Intent: 도움말
         elif intent == 'Communication.Request.Help':
@@ -88,7 +80,7 @@ class Processing:
                 except KeyError:
                     pass
 
-            if entities.get('SchoolName') or user.Database.get_last_school():
+            if entities.get('SchoolName') or user.get_school():
                 if entities.get('SchoolName'):  # 학교명을 직접 지정한 경우
                     neis = Neis()
                     try:
@@ -319,4 +311,15 @@ class Processing:
 
             user.send(m)
             # 성공
+            return
+
+        elif payload == 'BUGREPORT':
+            m = Message('TEXT', '아래 버튼을 눌러서 신고해주세요!')
+            user.send(m)
+
+            bug_report_card = Templates.Cards.bug_report
+            bug_report_card['buttons'][0]['url'] += user.uid
+            m = Message('CARD', bug_report_card)
+            user.send(m)
+
             return

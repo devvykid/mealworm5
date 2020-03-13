@@ -16,7 +16,7 @@ class Templates:
             {
                 "content_type": "text",
                 'title': '🚨버그 신고하기',
-                'payload': '',
+                'payload': 'BUGREPORT',
                 'image_url': ''
             },
             {
@@ -40,7 +40,7 @@ class Templates:
             },
             {
                 'text': '🚨버그 신고하기',
-                'payload': '',
+                'payload': 'BUGREPORT',
                 'image_url': ''
             },
             {
@@ -68,7 +68,7 @@ class Templates:
             },
             {
                 'text': '🚨버그 신고하기',
-                'payload': '',
+                'payload': 'BUGREPORT',
                 'image_url': ''
             },
             {
@@ -101,7 +101,7 @@ class Templates:
             {
                 "content_type": "text",
                 'title': '🚨버그 신고하기',
-                'payload': '',
+                'payload': 'BUGREPORT',
                 'image_url': ''
             }
         ]
@@ -110,7 +110,7 @@ class Templates:
             {
                 "content_type": "text",
                 'title': '🚨버그 신고하기',
-                'payload': '',
+                'payload': 'BUGREPORT',
                 'image_url': ''
             }
         ]

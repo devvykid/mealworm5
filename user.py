@@ -113,6 +113,10 @@ class User:
         # Parameter: school (School 객체)
         pass
 
+    def get_school(self):
+        # 없을땐 None 을 리턴한다.
+        pass
+
     # 여러개 학교가 중복으로 떠서 리트시 전 학교를 기억하기 위한 함수
     def save_request(self, school_list, date, mealtime):
         # Parameters:

@@ -17,6 +17,7 @@ class School:
 
     def get_meal(self, date, mealtime):
         # TODO: 경고: mealtime은 '텍스트' 입니다 (아님 None 이던가)
+        # ☝ 이런게 바로 발코딩이라는 거야.
         pass
 
 
