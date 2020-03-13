@@ -3,6 +3,7 @@ import pytz
 import requests
 from urllib import parse
 import time
+import neis as pyneis
 
 
 class School:
