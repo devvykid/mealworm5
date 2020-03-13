@@ -77,8 +77,6 @@ def old_deprecated():
         return 'Deprecated Request Processed.'
 
 
-
-
 @app.route('/webhook', methods=['GET', 'POST'])
 def webhook():
     if request.method == 'GET':
