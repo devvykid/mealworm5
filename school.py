@@ -4,13 +4,15 @@ import requests
 from urllib import parse
 import time
 import neis as pyneis
+from neis import school
 
 
 class School:
-    def __init__(self, school_name, school_code, school_region, school_address, school_region_hangul):
+    def __init__(self, school_name, school_code, school_region, school_address, school_region_hangul, school_type):
         self.name = school_name
         self.code = school_code
         self.region = school_region
+        self.type = school_type
         self.address = school_address
         self.region_hangul = school_region_hangul
 
@@ -18,8 +20,32 @@ class School:
 
     def get_meal(self, date, mealtime):
         # TODO: 경고: mealtime은 '텍스트' 입니다 (아님 None 이던가)
-        # ☝ 이런게 바로 발코딩이라는 거야.
-        pass
+
+        nc = pyneis.NeisClient(self.region_hangul)
+        sc = pyneis.school.School()
+        sc._code = self.code
+        sc._course = self.type
+        sc._name = self.name
+        sc._client = nc
+
+        try:
+            meal = sc.get_weekly_meals(date.year, date.month, date.day, mealtime)[date.isoweekday() % 7]
+        except TypeError:   # 그냥 전체 급식이 없으면
+            return Meal([], [], mealtime)
+        except ConnectionError:  # 리트
+            time.sleep(1.337)
+            meal = sc.get_weekly_meals(date.year, date.month, date.day, mealtime)[date.isoweekday() % 7]
+
+        meals = []
+        allergies = []
+        for menu in meal.menus:
+            meals.append(menu.text)
+            if menu.allergy is not None:
+                allergies.append(menu.allergy)
+            else:
+                allergies.append('')
+
+        return Meal(meals, allergies, mealtime)
 
 
 class Neis:
@@ -64,7 +90,8 @@ class Neis:
                     sch['SCHUL_CODE'],  # 나이스 코드
                     self.school_code_kor_to_eng(sch['LCTN_NM']),  # 나이스 리전 코드
                     sch['SCHUL_RDNMA'],  # 주소
-                    sch['LCTN_NM']      # 한글지역명
+                    sch['LCTN_NM'],      # 한글지역명
+                    int(list(category)[-1])  # 스쿨 타입
                 )
                 final_result.append(s)
 
@@ -106,5 +133,9 @@ class Meal:
         self.mealtime = mealtime
 
     def text(self):
+        result = ''
+        for index, meal in enumerate(self.menus):
+            result = result + meal + ' - ' + self.allergies[index] + '\n'
+
         # 급식이 없으면 None 을 리턴합니다.
-        return ''
+        return result

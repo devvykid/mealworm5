@@ -153,8 +153,26 @@ class Processing:
                 date = DateProcessing.parse_date(entities)  # datetime.datetime.date 객체
 
                 # 2. 급식 가져오기
-                meal = sch.get_meal(date, entities.get('mealtime', {}).get('value'))  # Meal 객체
-
+                try:
+                    meal = sch.get_meal(date, entities.get('mealtime', {}).get('value'))  # Meal 객체
+                except ConnectionError:
+                    q = [
+                        {
+                            "content_type": "text",
+                            'title': tmp_msg,
+                            'payload': '',
+                            'image_url': ''
+                        },
+                        {
+                            "content_type": "text",
+                            'title': '🚨버그 신고하기',
+                            'payload': 'BUGREPORT',
+                            'image_url': ''
+                        }
+                    ]
+                    m = Message('TEXT', '나이스 접속에 실패했습니다! 다시 시도해 주세요.', q)
+                    user.send(m)
+                    return
                 # 잘 포장해서 보낸다
                 if meal.text():  # 급식이 존재할 때
                     m = Message(
