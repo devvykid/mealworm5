@@ -5,7 +5,7 @@
 <img src="https://user-images.githubusercontent.com/30792695/82785254-2f5e8880-9e9d-11ea-8f34-dd2e7542bde7.png" alt="급식봇 로고" width="30%">
 
 ## Support me on Patreon
-<a href="https://https://www.patreon.com/devvykid"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="200px"></a>  
+<a href="https://www.patreon.com/devvykid"><img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" alt="Become a Patron!" width="200px"></a>  
 
 페이트리온에서 저를 후원해 주세요! 훌륭한 서비스로 보답하겠습니다.  
 
