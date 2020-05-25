@@ -45,7 +45,7 @@
 자연어 처리로는 [Dialogflow](https://dialogflow.com/) 엔진을 이용하였고, Dialogflow 훈련 자료는 공개되어있지 않습니다.
 
 ### 데이터베이스와 유저 관리
-급식봇은 아주 멋지고 빠른~~느려터진~~ [Mysql](https://redis.io/) 라는 NOSQL을 이용해 사용자 데이터를 관리합니다. 개꿀~!  
+급식봇은 아주 멋지고 빠른~~느려터진~~ [Firestore](https://cloud.google.com/firestore)를 이용해 사용자 데이터를 관리합니다. 개꿀~!  
 유저 관리에 대해서는 더 이상은 알려고 하면 다칩니다. ~~코드를 보면 됩니다~~
 
 ## 서버(클라우드) 인프라 구성
@@ -57,7 +57,7 @@
 - [ ] ~~너의 가상 여친~~
 
 ## 라이선스
-mealworm5 코드는 [WTFPL](http://www.wtfpl.net/) (Do What The Fuck You Want To Public License) 로 배포됩니다. 왜냐고요? BECAUSE WE CAN.
+mealworm5 코드는 [WTFPL](http://www.wtfpl.net/) (Do What The Fuck You Want To Public License) 로 배포됩니다. 왜냐고요? 읍읍 읍읍읍읍!!!!!
   
   
 -------------------------------------------------------------------
