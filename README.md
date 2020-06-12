@@ -26,7 +26,7 @@
 급식봇은 비단뱀이라는 아주 아름다운 언어와 Flask 프레임워크와 Jinja2 템플릿 엔진, 그리고 Dialogflow를 이용해 만들어졌습니다.  
 2019년부터 [나이스 오픈API](https://open.neis.go.kr/portal/mainPage.do)가 개방하면서 pyneis/schoolinfo 대신 API를 사용합니다.
 
-### 사용법
+## 사용법
 <a href="https://m.me/mealworm05">![Try it out on Facebook Messenger](https://img.shields.io/badge/Messenger-Try%20it%20out-%230078FF?style=for-the-badge&logo=Messenger&logoColor=%23ffffff)</a>  
 위 버튼을 눌러 시작합니다. 페이스북 메신저를 이용하기 위해서는 페이스북 계정이 필요합니다. 
  
@@ -36,6 +36,36 @@
 
 날짜를 생략할 경우 기본값은 오늘, 학교 이름을 생략할 경우 기본값은 마지막에 요청했던 학교, 
 밥타임(?)을 생략할 경우 기본은 중식을 가져옵니다.
+
+## 로컬에서 실행하기
+mealworm5 코드를 자신의 머신에서 직접 실행하고 싶으신가요? 좋습니다. 이 문단을 보고 따라하세요.
+### 클론하기
+이 리포지토리를 클론하세요. 
+### config.ini 작성하기
+리포지토리 루트에 있는 config.ini.sample 을 config.ini라는 이름으로 복사하세요. 여러 가지 API 키가 필요합니다.
+#### API 키 발급받기
+mw5는 여러 가지 API에 의존하기 때문에, API 키가 반드시 필요합니다.  
+##### NEIS OpenApi
+[나이스 오픈API 포털](https://open.neis.go.kr/portal/mainPage.do)에 접속하여 API 키를 발급받으세요.
+##### Facebook Token
+Webhook에서 사용하는 ```VERIFY_TOKEN```은 직접 생성해야 합니다. 적정한 길이의 랜덤 토큰을 생성하여 사용하세요.
+ACCESS_TOKEN은 Page Access Token을 의미하며, 메세지를 보낼 때 사용됩니다. [문서](https://developers.facebook.com/docs/facebook-login/access-tokens/#pagetokens)를 참고하여 토큰을 발급받고, 권한을 설정하세요.  
+##### DialogFlow Token
+DialogFlow 에이전트가 이미 만들어졌다는 가정 하에 진행합니다. 여기까지는 알아서 만들어오세요.  
+  
+1. [DialogFlow Docs](https://dialogflow.com/docs/reference/v2-auth-setup)를 참고하여 'DialogFlow API Client' Role을 가진 Service Account를 생성합니다. 서비스 계정을 생성 후 인증 정보가 담긴 JSON 파일을 다운로드합니다.
+2. Cloud SDK를 설치하고, 현재 프로젝트를 선택합니다. [참고](https://cloud.google.com/sdk/docs/)
+3. [여기](https://cloud.google.com/docs/authentication/production?hl=ko#setting_the_environment_variable)를 참고하여 1번에서 다운로드한 JSON의 경로를 환경 변수로 설정합니다.
+4. ```gcloud auth application-default print-access-token``` 명령어를 실행합니다. Access Token이 발급됩니다.  
+  
+API를 호출할 때 인증에 실패하는 경우 서비스 계정에 올바를 Role이 설정되어 있는지 확인하세요.
+
+### 파이썬 venv 설정하기
+venv를 설정하고 ```pip install -r requirements.txt```를 실행하여 프로젝트의 의존성을 설치하세요. mw5는 python3.6 이상 환경만 지원합니다.
+
+### 실행하기
+app.py를 실행하세요. ```localhost```에서 서버가 런칭됩니다.  
+경고: 프로덕션 환경에서는 반드시 uwsgi나 gunicorn 등의 제대로 된 서버를 사용해서 실행하세요. Flask 내장 wsgi 서버로 프로덕션에서 서비스하는 것은 [**매우 멍청한 짓입니다**](https://jhb.kr/358).
 
 ## 구현
 
