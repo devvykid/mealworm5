@@ -1,37 +1,54 @@
-from user import *
-from message import Message
-from nlp import LuisController, DateProcessing
+from message import FacebookMessenger, MessageElements
+from dialogflow import DialogFlow
+from neis import NEIS
 from logger import Logger
+
+# >>>>>
+from nlp import DateProcessing
 from template import Templates
-from school import Neis, School
 
 
 class Processing:
-    def __init__(self):
+    def __init__(self, config):
+        self.config = config
+
+        self.fm = FacebookMessenger(config)
+        self.df = DialogFlow(config)
+        self.neis = NEIS(config)
+        self.fs = FireStore(config)
+
         self.logger = Logger()
-        pass
+
+        return
 
     def process_message(self, user, tmp_msg):
-        user.typing()
+        # 1. 타이핑 풍선 띄우기
+        self.fm.typing()
 
-        # 1. LUIS 콜
-        luis = LuisController()
+        # 2. FireStore 에서 유저 조회하기
+
+        # 2. DIALOGFLOW 리퀘스트
         try:
-            luis.get_analysis_results(tmp_msg)
-            intent = luis.result['topScoringIntent']['intent']
-        except KeyError:
-            self.logger.log('Luis.ai API 오류!', 'ERROR')
-            em = Message('TEXT', '죄송합니다, 급식봇에 오류가 발생했습니다.\n'
-                                 '자세한 정보: 자연어 분석에 실패했습니다.\n'
-                                 '다시 시도해 주시고 오류가 계속되면 아래의 \'버그 신고하기\' 기능을 이용해 주세요.')
-            user.send(em)
+            nlp_result = self.df.analyze(tmp_msg)
+            intent = nlp_result['']
+            # TODO: IMPLEMENT
+        except KeyError as e:
+            # Log Error
+            self.logger.log('DF KeyError 발생!', 'ERROR', details=str(e))
+
+            # Send Error Message
+            msg = '죄송합니다, 급식봇에 오류가 발생했습니다.\n' \
+                  '자세한 정보: 언어 분석에 실패했습니다.\n' \
+                  '다시 시도해 주시고 오류가 계속되면 아래의 \'버그 신고하기\' 기능을 이용해 주세요.'
+            self.fm.send(msg)
             return
         except Exception as e:
-            self.logger.log('Luis.ai 기타 오류!: %s' % str(e), 'ERROR')
-            em = Message('TEXT', '죄송합니다, 급식봇에 오류가 발생했습니다.\n'
-                                 '자세한 정보: 자연어 분석에 알 수 없는 이유로 실패했습니다.\n'
-                                 '다시 시도해 주시고 오류가 계속되면 아래의 \'버그 신고하기\' 기능을 이용해 주세요.')
-            user.send(em)
+            # 기타 오류
+            self.logger.log('DF 기타 오류!', 'ERROR', details=str(e))
+            msg = '죄송합니다, 급식봇에 오류가 발생했습니다.\n' \
+                  '자세한 정보: 언어 분석에 알 수 없는 이유로 실패했습니다.\n' \
+                  '다시 시도해 주시고 오류가 계속되면 아래의 \'버그 신고하기\' 기능을 이용해 주세요.'
+            self.fm.send(msg)
             return
 
         # 2. Intent 분기
@@ -41,31 +58,31 @@ class Processing:
 
         # Intent: No
         elif intent == 'Communication.Etc.Swear':
-            tmp_msg = ':('
+            self.fm.send(':(')
 
         # Intent: Yes
         elif intent == 'Communication.Paralang.Yes':
-            tmp_msg = ':)'
+            self.fm.send(':)')
 
         # Intent: 부르기
         elif intent == 'Communication.Simple.Call':
-            tmp_msg = '네, 여기 있어요.'
+            self.fm.send('네, 여기 있어요.')
 
         # Intent: 굿
         elif intent == 'Communication.Simple.Good':
-            tmp_msg = '고마워요!'
+            self.fm.send('고마워요!')
 
         # Intent: 버그 신고하기
         elif intent == 'Action.Report':
-            return self.process_postback(user, 'BUGREPORT')
+            return self.process_postback(user, 'BUG_REPORT')
 
         # Intent: 도움말
         elif intent == 'Communication.Request.Help':
-            return self.process_postback(user, 'HELP_MEAL')
+            return self.process_postback(user, 'HELP')
 
         # Intent: 인사하기
         elif intent == 'Communication.Simple.Hi':
-            tmp_msg = '안녕하세요!'
+            self.fm.send('안녕하세요!')
 
         # Intent: 급식
         elif intent == 'Communication.Request.Meal':
@@ -225,8 +242,7 @@ class Processing:
 
         return
 
-    @staticmethod
-    def process_postback(user, payload):
+    def process_postback(self, user, payload):
 
         user.typing()
 
@@ -264,7 +280,7 @@ class Processing:
             return
 
         # 사용법
-        elif payload == 'HELP_MEAL':
+        elif payload == 'HELP':
             # 1/3 (Text)
             msg_str = '이렇게 사용하시면 돼요!\n' \
                       '예) 서울과고 내일 저녁 알려줄래?\n' \
@@ -331,7 +347,7 @@ class Processing:
             # 성공
             return
 
-        elif payload == 'BUGREPORT':
+        elif payload == 'BUG_REPORT':
             m = Message('TEXT', '아래 버튼을 눌러서 신고해주세요!')
             user.send(m)
 
@@ -341,3 +357,6 @@ class Processing:
             user.send(m)
 
             return
+
+        elif payload == 'ATTACHMENTS':
+            self.fm.send(':)')
