@@ -1,5 +1,6 @@
-from message import FacebookMessenger, MessageElements
+from facebook import FacebookMessenger, MessageElements, Graph
 from dialogflow import DialogFlow
+from firestore import FireStore
 from neis import NEIS
 from logger import Logger
 
@@ -13,6 +14,7 @@ class Processing:
         self.config = config
 
         self.fm = FacebookMessenger(config)
+        self.graph = Graph(config)
         self.df = DialogFlow(config)
         self.neis = NEIS(config)
         self.fs = FireStore(config)
@@ -23,7 +25,7 @@ class Processing:
 
     def process_message(self, user, tmp_msg):
         # 1. 타이핑 풍선 띄우기
-        self.fm.typing()
+        self.fm.typing(user)
 
         # 2. FireStore 에서 유저 조회하기
 
