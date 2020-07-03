@@ -1,7 +1,7 @@
 from facebook import FacebookMessenger, Graph
 from facebook import MessageElements as Elements
-from dialogflow import DialogFlow
-from firestore import FireStore
+from dialogflow import DialogFlowController
+from firestore import FireStoreController
 from neis import NEIS
 from logger import Logger
 from template import Templates
@@ -16,8 +16,8 @@ class Processing:
 
         self.fm = FacebookMessenger(config)
         self.graph = Graph(config)
-        self.df = DialogFlow(config)
-        self.fs = FireStore(config)
+        self.df = DialogFlowController(config)
+        self.fs = FireStoreController(config)
         self.neis = NEIS(config)
 
         self.logger = Logger()

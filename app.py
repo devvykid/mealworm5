@@ -15,7 +15,7 @@ import json
 
 from process import Processing
 from user import User
-from firestore import FireStore
+from firestore import FireStoreController
 from facebook import FacebookMessenger
 from logger import Logger
 
@@ -32,7 +32,7 @@ g_config.read('config.ini')
 
 # 객체 선언하기
 ps = Processing(g_config)
-fs = FireStore(g_config)
+fs = FireStoreController(g_config)
 fm = FacebookMessenger(g_config)
 
 logger = Logger()

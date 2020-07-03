@@ -50,7 +50,7 @@ mw5는 여러 가지 API에 의존하기 때문에, API 키가 반드시 필요�
 ##### Facebook Token
 Webhook에서 사용하는 ```VERIFY_TOKEN```은 직접 생성해야 합니다. 적정한 길이의 랜덤 토큰을 생성하여 사용하세요.
 ACCESS_TOKEN은 Page Access Token을 의미하며, 메세지를 보낼 때 사용됩니다. [문서](https://developers.facebook.com/docs/facebook-login/access-tokens/#pagetokens)를 참고하여 토큰을 발급받고, 권한을 설정하세요.  
-##### DialogFlow Token
+##### Dialogflow API 설정하기
 DialogFlow 에이전트가 이미 만들어졌다는 가정 하에 진행합니다. 여기까지는 알아서 만들어오세요.  
   
 1. [DialogFlow Docs](https://dialogflow.com/docs/reference/v2-auth-setup)를 참고하여 'DialogFlow API Client' Role을 가진 Service Account를 생성합니다. 서비스 계정을 생성 후 인증 정보가 담긴 JSON 파일을 다운로드합니다.
@@ -60,12 +60,23 @@ DialogFlow 에이전트가 이미 만들어졌다는 가정 하에 진행합니�
   
 API를 호출할 때 인증에 실패하는 경우 서비스 계정에 올바를 Role이 설정되어 있는지 확인하세요.
 
+##### FireStore 인증 설정하기
+mw5는 구글 클라이언트 라이브러리를 사용하며, Google Cloud 내의 App Engine에서 호스팅되기 때문에 자동으로 인증을 거칩니다.  
+고로, 님이 이걸 돌릴려면  
+a. 편하게 개발자랑 똑같은 환경(GAE) 에서 실행합니다.  
+b. 홀로 쓸쓸하게 구글 Cloud Docs를 뒤지면서 인증 시스템을 코드에서 수정합니다.  
+  
+a. 는 당연히 개나 소나 ~~열심히 독스를 찾아서~~ 알아서 하실 수 있을 것이라 믿습니다.  
+b. 는 제가 귀찮아서 설명하지 않겠습니다(히힛). 대신 예의상 [링크](https://firebase.google.com/docs/firestore/quickstart?hl=ko#python
+) [몇](https://cloud.google.com/docs/authentication/getting-started#command-line) [개](https://cloud.google.com/docs/authentication?hl=ko)를 남겨 놓겠습니다.  
+  
+아, 왜 DialogFlow는 이런 방식으로 안 했냐고요? 귀찮아서요.
 ### 파이썬 venv 설정하기
 venv를 설정하고 ```pip install -r requirements.txt```를 실행하여 프로젝트의 의존성을 설치하세요. mw5는 python3.6 이상 환경만 지원합니다.
 
 ### 실행하기
 app.py를 실행하세요. ```localhost```에서 서버가 런칭됩니다.  
-경고: 프로덕션 환경에서는 반드시 uwsgi나 gunicorn 등의 제대로 된 서버를 사용해서 실행하세요. Flask 내장 wsgi 서버로 프로덕션에서 서비스하는 것은 [**매우 멍청한 짓입니다**](https://jhb.kr/358).
+경고: 프로덕션 환경에서는 반드시 uwsgi나 gunicorn 등의 '제대로 된 서버'를 사용해서 실행하세요. Flask 내장 wsgi 서버로 프로덕션에서 서비스하는 것은 [**매우 멍청한 짓입니다**](https://jhb.kr/358).
 
 ## 구현
 

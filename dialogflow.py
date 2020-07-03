@@ -3,7 +3,7 @@ import json
 from logger import Logger
 
 
-class DialogFlow:
+class DialogFlowController:
     def __init__(self, config):
         # Endpoint Config
         self.endpoint = "https://dialogflow.googleapis.com"

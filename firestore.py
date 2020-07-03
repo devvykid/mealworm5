@@ -1,16 +1,26 @@
 import datetime
-import pytz
 
 from logger import Logger
 from user import User
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
-class FireStore:
+
+class FireStoreController:
     def __init__(self, config):
         self.config = config
         self.logger = Logger()
+        self.logger.log("FS was initialized.")
 
-        self.logger.log("FS class was initialized.")
+        # Use the application default credentials
+        self.cred = credentials.ApplicationDefault()
+        firebase_admin.initialize_app(self.cred, {
+            'projectId': config['GOOGLE']['PROJECT_ID'],
+        })
+
+        self.db = firestore.client()
 
         return
 
@@ -21,24 +31,24 @@ class FireStore:
         :return: User Object (없으면 None)
         """
 
-        """
-        여기서
-        지지고
-        볶고
-        하세요
-        """
+        doc_ref = self.db.collection('users').document(uid)
+        try:
+            doc = doc_ref.get()
+            doc_dict = doc.to_dict()
 
-        # 유저 조회가 실패하면 None 리턴
+        except Exception as e:
+            self.logger.log('FS: 유저 조회 실패: {0}'.format(uid), 'ERROR', str(e))
+            return None
 
         user_config = {
             "uid": uid,
             "new_user": False,
             "user_details": {
-                "name": "",    # 변경: 반드시 있음 (str)
-                "use_count": 0,   # TODO
-                "since": datetime.datetime.now(pytz.timezone('Asia/Seoul'))    # TODO
+                "name": doc_dict['name'],
+                "use_count": doc_dict['use_count'],
+                "since": datetime.datetime.strptime(doc_dict['since'], '%Y-%m-%d-%H-%M-%S')
             },
-            "last_school_code": ""  # TODO (없으면 "")
+            "last_school_code": doc_dict['last_school_code']
         }
 
         r_user = User(user_config, self.config)
@@ -46,7 +56,16 @@ class FireStore:
         return r_user
 
     def save_user(self, user):
-        pass
+        doc_ref = self.db.collection('users').document(user.uid)
+        doc_ref.set({
+            'name': user.name,
+            'use_count': user.use_count,
+            'since': datetime.datetime.strftime(user.since, '%Y-%m-%d-%H-%M-%S'),
+            'last_school_code': user.last_school_code
+        })
 
     def update_user(self, user, key, value):
-        pass
+        doc_ref = self.db.collection('users').document(user.uid)
+        doc_ref.set({
+            key: value
+        })
