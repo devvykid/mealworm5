@@ -1,4 +1,6 @@
 import datetime
+import pytz
+
 from logger import Logger
 from user import User
 
@@ -15,7 +17,7 @@ class FireStore:
     def get_user(self, uid):
         """
         Search user from firestore db, return the user object.
-        :param uid: Facebook Messenger recipient_id
+        :param uid: User ID (Recipient ID)
         :return: User Object (없으면 None)
         """
 
@@ -32,13 +34,19 @@ class FireStore:
             "uid": uid,
             "new_user": False,
             "user_details": {
-                "name": None,    # 있으면 가져오기
+                "name": "",    # 변경: 반드시 있음 (str)
                 "use_count": 0,   # TODO
-                "register_date": datetime.datetime.now()    # TODO
-            }
+                "since": datetime.datetime.now(pytz.timezone('Asia/Seoul'))    # TODO
+            },
+            "last_school_code": ""  # TODO (없으면 "")
         }
 
         r_user = User(user_config, self.config)
 
         return r_user
 
+    def save_user(self, user):
+        pass
+
+    def update_user(self, user, key, value):
+        pass

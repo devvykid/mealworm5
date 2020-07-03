@@ -72,6 +72,35 @@ class DialogFlow:
                 "languageCode": "ko"
             }
         }
+        
+        {
+          "responseId": "fca3653c-215e-4f79-aec5-b977f0ae0eeb-425db6e2",
+          "queryResult": {
+            "queryText": "내일 진관중 급식",
+            "parameters": {
+              "date-time": "2020-07-04T12:00:00+09:00", # 선택적(공백)
+              "SchoolName": "진관중",  # 선택적(공백)
+              "MealTime": "중식"  # Mealtime 밸류는 반드시 존재
+            },
+            "allRequiredParamsPresent": true,
+            "fulfillmentMessages": [
+              {
+                "text": {
+                  "text": [
+                    ""
+                  ]
+                }
+              }
+            ],
+            "intent": {
+              "name": "projects/mealworm5/agent/intents/caba7e69-960e-47d1-bc17-254b0d9a1514",
+              "displayName": "Action.GetMeal"
+            },
+            "intentDetectionConfidence": 1,
+            "languageCode": "ko"
+          }
+        }
+        
         """
         if result.get('error'):
             self.logger.log('DialogFlow API에서 오류가 발생했습니다.', 'ERROR', response.text)

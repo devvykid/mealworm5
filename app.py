@@ -7,7 +7,7 @@ For more information,
 please refer to the link https://github.com/devvykid/mealworm5/ .
 """
 
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, render_template
 import traceback
 import configparser
 import requests
@@ -18,7 +18,6 @@ from user import User
 from firestore import FireStore
 from facebook import FacebookMessenger
 from logger import Logger
-from bug import Bug
 
 # 메타데이터
 __author__ = "JeongYeon Park (devvykid)"
@@ -42,7 +41,7 @@ logger = Logger()
 @app.route('/')
 def hello_world():
     # Make it Ra1n
-    logger.log('Hello, world!', 'INFO', 'This is a test.')
+    logger.log('Hello, world!', 'NOTICE', 'This is a test.')
     return '<code>make it ra1n</code>'
 
 
@@ -146,6 +145,19 @@ def webhook():
                             ps.process_postback(user, 'ATTACHMENTS')
                             continue
 
+                    try:
+                        fs.save_user(user)
+                        logger.log(
+                            '유저 세이브 완료: {0}'.format(user.uid),
+                            'NOTICE'
+                        )
+                    except Exception as e:
+                        logger.log(
+                            'Firestore 유저 세이브 중 오류 발생: {0}'.format(str(e)),
+                            'ERROR',
+                            'RECIPIENT: {0}'.format(user.uid)
+                        )
+
             return {"result", "fuck yeah!"}
 
         except Exception as e:
@@ -193,8 +205,7 @@ def bugreport():
             if uid != request.args.get('id'):
                 raise ValueError
 
-            b = Bug(uid, title, details, contact)
-            b.submit()
+            logger.bugreport(uid, title, details, contact)
 
             return render_template('success.html')
 

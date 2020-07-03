@@ -9,3 +9,7 @@ class Logger:
 
         # TODO: Implement Send Mail (GAE)
         pass
+
+    def bugreport(self, uid, title, details, contact):
+        # TODO
+        pass
