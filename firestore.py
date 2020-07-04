@@ -60,7 +60,7 @@ class FireStoreController:
         doc_ref.set({
             'name': user.name,
             'use_count': user.use_count,
-            'since': datetime.datetime.strftime(user.since, '%Y-%m-%d-%H-%M-%S'),
+            'since': user.since.strftime('%Y-%m-%d-%H-%M-%S'),
             'last_school_code': user.last_school_code
         })
 

@@ -262,9 +262,24 @@ class Processing:
             user.last_school_code = school_code
 
             # 급식 가져오기
-            sch = self.neis.school_from_code(school_code)
+            try:
+                sch = self.neis.school_from_code(school_code)
+            except ValueError as e:
+                self.logger.log('나이스 재조회중 Duplicate School 에러!', 'ERROR', str(e))
+                self.fm.send(user.uid, '나이스 조회중 오류가 발생했습니다: 중복 조회되었습니다.', Templates.QuickReplies.after_system_error)
+                return
+            except Exception as e:
+                self.logger.log('나이스 재조회중 알 수 없는 에러!', 'ERROR', str(e))
+                self.fm.send(user.uid, '나이스 조회중 오류가 발생했습니다: 알 수 없는 오류.', Templates.QuickReplies.after_system_error)
+                return
+
             date = datetime.datetime.strptime(tmp_date, "%Y-%m-%d")
-            meal = sch.get_meal(date, int(mealtime))  # Menu 객체의 배열
+            try:
+                meal = sch.get_meal(date, int(mealtime))  # Menu 객체의 배열
+            except Exception as e:
+                self.logger.log('급식 조회 중 처리되지 않은 에러!', 'ERROR', str(e))
+                self.fm.send(user.uid, '급식 조회중 오류가 발생했습니다: 처리되지 않은 오류.', Templates.QuickReplies.after_system_error)
+                return
 
             if int(mealtime) == 1:
                 mt_text = '아침'
@@ -277,7 +292,7 @@ class Processing:
             if len(meal) != 0:  # 급식이 존재할 때
                 meal_text = ''
                 for menu in meal:
-                    meal_text = '{0}{1} {2}'.format(meal_text, menu.name, menu.allergy)
+                    meal_text = meal_text + menu
                 meal_text = meal_text.rstrip()
 
                 self.fm.send(
