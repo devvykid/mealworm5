@@ -13,22 +13,22 @@ import configparser
 import requests
 import json
 
-from process import Processing
-from user import User
-from firestore import FireStoreController
-from facebook import FacebookMessenger
-from logger import Logger
+from app.process import Processing
+from app.user import User
+from app.firestore import FireStoreController
+from app.facebook import FacebookMessenger
+from app.logger import Logger
 
 # 메타데이터
 __author__ = "JeongYeon Park (devvykid)"
 __ver__ = "20200605-rev1-fix0"
 
-# 짜잔
-app = Flask(__name__, static_url_path='/static')
-
 # config.ini 읽어오기
 g_config = configparser.ConfigParser()
 g_config.read('config.ini')
+
+# 짜잔
+app = Flask(__name__, static_url_path='/static')
 
 # 객체 선언하기
 ps = Processing(g_config)
@@ -215,6 +215,3 @@ def bugreport():
         except Exception as e:
             return render_template('bad.html', details='처리되지 않은 오류입니다: ' + str(e))
 
-
-if __name__ == '__main__':
-    app.run()

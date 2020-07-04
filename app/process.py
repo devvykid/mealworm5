@@ -1,10 +1,10 @@
-from facebook import FacebookMessenger, Graph
-from facebook import MessageElements as Elements
-from dialogflow import DialogFlowController
-from firestore import FireStoreController
-from neis import NEIS
-from logger import Logger
-from template import Templates
+from app.facebook import FacebookMessenger, Graph
+from app.facebook import MessageElements as Elements
+from app.dialogflow import DialogFlowController
+from app.firestore import FireStoreController
+from app.neis import NEIS
+from app.logger import Logger
+from app.template import Templates
 
 import datetime
 import pytz

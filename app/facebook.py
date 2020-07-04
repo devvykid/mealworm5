@@ -1,6 +1,6 @@
 import requests
 import json
-from logger import Logger
+from app.logger import Logger
 
 
 # 메시지 요소 (카드, 빠른 답장 등 클래스)

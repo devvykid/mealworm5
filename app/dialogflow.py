@@ -1,6 +1,6 @@
 import requests
 import json
-from logger import Logger
+from app.logger import Logger
 
 
 class DialogFlowController:

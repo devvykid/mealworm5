@@ -1,7 +1,7 @@
 import datetime
 
-from logger import Logger
-from user import User
+from app.logger import Logger
+from app.user import User
 
 import firebase_admin
 from firebase_admin import credentials

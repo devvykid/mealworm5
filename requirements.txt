@@ -30,4 +30,5 @@ rsa==4.6
 six==1.15.0
 uritemplate==3.0.1
 urllib3==1.25.8
+uwsgi==2.0.19.1
 Werkzeug==1.0.0
