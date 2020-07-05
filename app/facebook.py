@@ -63,6 +63,11 @@ class FacebookMessenger:
                 for key in card:
                     if type(card[key]) == str:
                         card[key] = card[key].replace('%rootdir%', self.site_root)
+                    elif type(card[key]) == list:
+                        for en in enumerate(card[key]):
+                            for nested_key in card[key][en]:
+                                card[key][en][nested_key] = \
+                                    card[key][en][nested_key].replace('%rootdir%', self.site_root)
                 body['message']['attachment']['payload']['elements'].append(card)
 
         # 빠른 답장 추가하기
