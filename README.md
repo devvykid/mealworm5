@@ -53,15 +53,14 @@ ACCESS_TOKEN은 Page Access Token을 의미하며, 메세지를 보낼 때 사�
 ##### Dialogflow API 설정하기
 DialogFlow 에이전트가 이미 만들어졌다는 가정 하에 진행합니다. 여기까지는 알아서 만들어오세요.  
   
+google oauth 라이브러리로 자동으로 인증을 진행하기 위해 서비스 계정을 만듭니다.
 1. [DialogFlow Docs](https://dialogflow.com/docs/reference/v2-auth-setup)를 참고하여 'DialogFlow API Client' Role을 가진 Service Account를 생성합니다. 서비스 계정을 생성 후 인증 정보가 담긴 JSON 파일을 다운로드합니다.
-2. Cloud SDK를 설치하고, 현재 프로젝트를 선택합니다. [참고](https://cloud.google.com/sdk/docs/)
-3. [여기](https://cloud.google.com/docs/authentication/production?hl=ko#setting_the_environment_variable)를 참고하여 1번에서 다운로드한 JSON의 경로를 환경 변수로 설정합니다.
-4. ```gcloud auth application-default print-access-token``` 명령어를 실행합니다. Access Token이 발급됩니다.  
+2. dialogflow.py의 코드를 수정합니다 (알아서)
   
 API를 호출할 때 인증에 실패하는 경우 서비스 계정에 올바를 Role이 설정되어 있는지 확인하세요.
 
 ##### FireStore 인증 설정하기
-mw5는 구글 클라이언트 라이브러리를 사용하며, Google Cloud 내의 App Engine에서 호스팅되기 때문에 자동으로 인증을 거칩니다.  
+앞에서 언급했다시피, mw5는 구글 클라이언트 라이브러리를 사용하며, Google Cloud 내의 App Engine에서 호스팅되기 때문에 자동으로 인증을 거칩니다.  
 고로, 님이 이걸 돌릴려면  
 a. 편하게 개발자랑 똑같은 환경(GAE) 에서 실행합니다.  
 b. 홀로 쓸쓸하게 구글 Cloud Docs를 뒤지면서 인증 시스템을 코드에서 수정합니다.  
@@ -70,9 +69,6 @@ a. 는 당연히 개나 소나 ~~열심히 독스를 찾아서~~ 알아서 하�
 b. 는 제가 귀찮아서 설명하지 않겠습니다(히힛). 대신 예의상 [링크](https://firebase.google.com/docs/firestore/quickstart?hl=ko#python
 ) [몇](https://cloud.google.com/docs/authentication/getting-started#command-line) [개](https://cloud.google.com/docs/authentication?hl=ko)를 남겨 놓겠습니다.  
   
-아, 왜 DialogFlow는 이런 방식으로 안 했냐고요? 귀찮아서요.  
-  
-###### 개발자가 빼먹은 경고
 app 패키지의 firestore.py 위에 있는 project_id 값을 **변경하세요**. 성능상의 이유로 config.ini 에서 불러오지 않습니다.
 ### 파이썬 venv 설정하기
 venv를 설정하고 ```pip install -r requirements.txt```를 실행하여 프로젝트의 의존성을 설치하세요. mw5는 python3.6 이상 환경만 지원합니다.

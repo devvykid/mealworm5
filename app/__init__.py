@@ -70,12 +70,16 @@ def old_deprecated():
                             }
                         }
 
-                        requests.post(
-                            'https://graph.facebook.com/v3.3/me/messages?access_token=' +
+                        response = requests.post(
+                            'https://graph.facebook.com/v7.0/me/messages?access_token=' +
                             g_config['FACEBOOK']['OLD_ACCESS_TOKEN'],
                             data=json.dumps(body),
                             headers=headers
                         )
+
+                        j = response.json()
+                        if j.get('error'):
+                            Logger.log('[APP > old] 그래프 API가 오류를 반환했습니다.', 'ERROR', response.text)
 
         except Exception as e:
             print('Fuck: {}'.format(str(e)))
@@ -95,7 +99,6 @@ def webhook():
 
     if request.method == 'POST':
         try:
-            fm = FacebookMessenger(g_config)
             fs = FireStoreController()
 
             req = request.get_json()
@@ -103,22 +106,19 @@ def webhook():
             for event in req['entry']:
                 # 요청의 단위
                 for e in event['messaging']:
-                    # 0-0. 고스트 확인
-                    if req.get('message', {}).get('is_echo'):
+                    # 0. 고스트 확인
+                    if e.get('message', {}).get('is_echo'):
                         continue
 
-                    # 0-1: Typing
-                    fm.typing(req['sender']['id'])
-
                     # 1. 디비에서 불러오기
-                    usr = fs.get_user(req['sender']['id'], g_config)
+                    usr = fs.get_user(e['sender']['id'], g_config)
 
                     # 0-1-1. 신규 유저인 경우
                     if usr is None:
-                        Logger.log('[APP > webhook] UID: {0} 생성합니다...'.format(req['sender']['id']))
+                        Logger.log('[APP > webhook] UID: {0} 생성합니다...'.format(e['sender']['id']))
                         user_config = {
                             'new_user': True,
-                            'uid': req['sender']['id']
+                            'uid': e['sender']['id']
                         }
                         usr = User(user_config, g_config)
 
@@ -160,7 +160,7 @@ def webhook():
                             'RECIPIENT: {0}'.format(usr.uid)
                         )
 
-            return {'result', 'fuck yeah!'}
+            return {'result': 'fuck yeah!'}
 
         except Exception as e:
             traceback.print_exc()
@@ -168,11 +168,11 @@ def webhook():
             try:
                 logger = Logger()
                 # 로거 (Lint 정상)
-                logger.log('치명적 오류 발생!! RECIPIENT: {0}'.format(req['sender']['id']), level='ERROR', details=str(e))
+                logger.log('치명적 오류 발생!! RECIPIENT: {0}'.format(e['sender']['id']), level='ERROR', details=str(e))
 
                 fm = FacebookMessenger(g_config)
                 fm.send(
-                    req['sender']['id'],
+                    e['sender']['id'],
                     '죄송합니다, 급식봇에 처리되지 않은 오류가 발생했습니다.\n'
                     '일시적인 오류인 경우, 다시 시도해 주세요. 계속적으로 오류가 발생하는 경우, '
                     '아래의 \'버그 신고하기\' 기능을 이용해 신고해 주세요.\n%s' % str(e)

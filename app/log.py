@@ -1,4 +1,6 @@
 import logging
+import datetime
+import pytz
 
 
 class Logger:
@@ -10,6 +12,8 @@ class Logger:
         # Three log levels: NOTICE, WARN, ERROR
         # TODO: Timestamp
         # TODO: Make It Async
+        print('[{0}] [{1}] {2} {3}'.format(datetime.datetime.now(pytz.timezone('Asia/Seoul')).strftime('%Y%m%d-%H%M%S'),
+                                           level, payload, details))
         try:
             if level == 'ERROR':
                 logging.error(payload + details)

@@ -1,113 +1,35 @@
-import requests
-import json
+from app.log import Logger
+
+import dialogflow_v2 as dialogflow
+
+from google.oauth2 import service_account
+
+
+credentials = service_account.Credentials.from_service_account_file('mealworm5-630b8064ec70.json')
+session_client = dialogflow.SessionsClient(credentials=credentials)
+entity_client = dialogflow.SessionEntityTypesClient(credentials=credentials)
 
 
 class DialogFlowController:
     def __init__(self, g_config):
-        # Endpoint Config
-        self.endpoint = 'https://dialogflow.googleapis.com'
-
-        # Read API Keys from config
-        self.project_id = g_config['DIALOGFLOW']['DIALOGFLOW_PROJECT_ID']
-        self.access_token = g_config['DIALOGFLOW']['DIALOGFLOW_ACCESS_TOKEN']
-
+        self.project_id = g_config['DIALOGFLOW']['PROJECT_ID']
         return
 
-    def analyze(self, query, user_id, session):
-        req_url = '/v2/projects/%s/agent/environments/-/users/%s/sessions/%s:detectIntent' \
-                  % (self.project_id, user_id, session)
+    def get_results(self, query, user_id, session):
+        session = session_client.session_path(self.project_id, user_id + session)
+        text_input = dialogflow.types.TextInput(text=query, language_code='ko_KR')
+        query_input = dialogflow.types.QueryInput(text=text_input)
+        response = session_client.detect_intent(
+            session=session, query_input=query_input)
 
-        querystring = {
-            'access_token': self.access_token
-        }
+        Logger.log('[DF > get_intent] Dialogflow API 처리 완료!', 'NOTICE', '요청 query: %s' % query)
 
-        payload = json.dumps({
-            'queryInput': {
-                'text': {
-                    'text': query,
-                    'languageCode': 'ko'
-                }
-            },
-            'queryParams': {
-                'timeZone': 'Asia/Seoul'
-            }
-        })
-
-        headers = {
-            'accept': 'application/json',
-            'content-type': 'application/json'
-        }
-
-        response = requests.request('POST', self.endpoint + req_url, data=payload, headers=headers, params=querystring)
-
-        result = response.json()
-
-        '''
-        [Sample Response Body]
-        {
-            'responseId': '[REDACTED]',
-            'queryResult': {
-                'queryText': 'ㅎㅇㅎㅇ',
-                'action': 'input.welcome',
-                'parameters': {},
-                'allRequiredParamsPresent': true,
-                'fulfillmentText': '안녕하세요!',
-                'fulfillmentMessages': [
-                    {
-                        'text': {
-                            'text': [
-                                '안녕하세요!'
-                            ]
-                        }
-                    }
-                ],
-                'intent': {
-                    'name': '[REDACTED]',
-                    'displayName': 'Communication.Hi'
-                },
-                'intentDetectionConfidence': 1,
-                'languageCode': 'ko'
-            }
-        }
-        
-        {
-          'responseId': 'fca3653c-215e-4f79-aec5-b977f0ae0eeb-425db6e2',
-          'queryResult': {
-            'queryText': '내일 진관중 급식',
-            'parameters': {
-              'date-time': '2020-07-04T12:00:00+09:00', # 선택적(공백)
-              'SchoolName': '진관중',  # 선택적(공백)
-              'MealTime': '중식'  # Mealtime 밸류는 반드시 존재
-            },
-            'allRequiredParamsPresent': true,
-            'fulfillmentMessages': [
-              {
-                'text': {
-                  'text': [
-                    ''
-                  ]
-                }
-              }
-            ],
-            'intent': {
-              'name': 'projects/mealworm5/agent/intents/caba7e69-960e-47d1-bc17-254b0d9a1514',
-              'displayName': 'Action.GetMeal'
-            },
-            'intentDetectionConfidence': 1,
-            'languageCode': 'ko'
-          }
-        }
-        
-        '''
-        from app.log import Logger
-        if result.get('error'):
-            raise ValueError(response.text)
-
-        Logger.log('Dialogflow API 처리 완료!', 'NOTICE', '요청 query: %s' % query)
+        entities = {}
+        for e in response.query_result.parameters.fields:
+            entities[e] = response.query_result.parameters.fields.get(e).string_value
 
         return {
-            'intent': result['queryResult']['intent']['displayName'],
-            'isfallback': result['queryResult']['intent'].get('isFallback', False),
-            'confidence': result['queryResult']['intentDetectionConfidence'],
-            'reply': result['queryResult'].get('fulfillmentText', None)
+            'intent': response.query_result.intent.display_name,
+            'confidence': response.query_result.intent_detection_confidence,
+            'entities': entities
         }

@@ -18,7 +18,7 @@ class MessageElements:
 
 class FacebookMessenger:
     def __init__(self, g_config):
-        self.endpoint = 'https://graph.facebook.com/v3.3/me/messages?access_token='
+        self.endpoint = 'https://graph.facebook.com/v7.0/me/messages?access_token='
         self.access_token = g_config['FACEBOOK']['ACCESS_TOKEN']
 
         self.site_root = g_config['SITE']['ROOT_URL']
@@ -31,7 +31,12 @@ class FacebookMessenger:
         body = {'recipient': {'id': uid}, 'sender_action': 'typing_on'}
 
         # 보낸다
-        requests.post(self.endpoint + self.access_token, data=json.dumps(body), headers=headers)
+        response = requests.post(self.endpoint + self.access_token, data=json.dumps(body), headers=headers)
+
+        j = response.json()
+        if j.get('error'):
+            from app.log import Logger
+            Logger.log('[FB > typing] 그래프 API가 오류를 반환했습니다.', 'ERROR', response.text)
 
         return
 
@@ -64,12 +69,17 @@ class FacebookMessenger:
             for qr in quick_replies.payload:
                 body['message']['quick_replies'] = []
                 body['message']['quick_replies'].append(qr)
-        elif type(MessageElements) == dict:
+        else:
             for qr in quick_replies:
                 body['message']['quick_replies'] = []
                 body['message']['quick_replies'].append(qr)
 
-        requests.post(self.endpoint + self.access_token, data=json.dumps(body), headers=headers)
+        response = requests.post(self.endpoint + self.access_token, data=json.dumps(body), headers=headers)
+
+        j = response.json()
+        if j.get('error'):
+            from app.log import Logger
+            Logger.log('[FB > send] 그래프 API가 오류를 반환했습니다.', 'ERROR', response.text)
 
         return
 
@@ -87,15 +97,19 @@ class Graph:
         :return: str, 실패하면 유저N
         """
         # 페이스북 Graph Api 를 사용해 사용자의 진짜 이름을 가져옵니다.
-        url = 'https://graph.facebook.com/%s?fields=first_name,last_name&access_token=%s' \
+        url = 'https://graph.facebook.com/v7.0/%s?fields=first_name,last_name&access_token=%s' \
               % (uid, self.config['FACEBOOK']['ACCESS_TOKEN'])
 
         resp = requests.get(url)
         resp_json = resp.json()
 
+        if resp_json.get('error'):
+            from app.log import Logger
+            Logger.log('[GP > get_name] 그래프 API가 오류를 반환했습니다.', 'ERROR', resp.text)
+
         try:
             if resp.status_code == 200:
-                return resp_json['first_name'] + resp_json['last_name']
+                return resp_json['first_name']
             else:
                 from app.log import Logger
                 Logger.log('[Graph > get_name] API 응답 코드가 200이 아닙니다!', 'ERROR', 'RECIPIENT: {0}'.format(uid))

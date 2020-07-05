@@ -13,6 +13,7 @@ class Processing:
         # 1. 오브젝트 만들기
         from app.facebook import FacebookMessenger
         fm = FacebookMessenger(g_config)
+        fm.typing(user.uid)
 
         from app.log import Logger
         Logger.log('[PS > process_message] 요청: {0}->\'{1}\''.format(user.uid, req_str))
@@ -21,36 +22,12 @@ class Processing:
         try:
             from app.dialogflow import DialogFlowController
             df = DialogFlowController(g_config)
-            df_result = df.analyze(req_str, user.uid, user.uid + str(user.use_count))
-            intent = df_result['queryResult']['intent']['displayName']
-
-        except KeyError:
-            Logger.log('[PS > process_message] DF 처리 중 KeyError가 발생하였습니다.', 'ERROR')
-
-            fm.send(
-                user.uid,
-                '죄송합니다, 급식봇에 오류가 발생했습니다.\n'
-                '자세한 정보: 데이터를 읽을 수 없어서 언어 분석에 실패했습니다.\n'
-                '다시 시도해 보시고 오류가 지속되면 아래의 \'버그 신고하기\'를 이용해 주세요.',
-                Templates.QuickReplies.after_system_error
-            )
-            return
-
-        except ValueError as e:
-            from app.log import Logger
-            Logger.log('[PS > process_message] DF API가 오류 코드를 반환했습니다.', 'ERROR', 'RESPONSE: {0}'.format(e))
-            fm.send(
-                user.uid,
-                '죄송합니다, 급식봇에 오류가 발생했습니다.\n'
-                '자세한 정보: API가 오류를 반환해 언어 분석에 실패했습니다.\n'
-                '다시 시도해 보시고 오류가 지속되면 아래의 \'버그 신고하기\'를 이용해 주세요.',
-                Templates.QuickReplies.after_system_error
-            )
-            return
+            df_result = df.get_results(req_str, user.uid, user.uid + str(user.use_count))
+            intent = df_result['intent']
 
         except Exception as e:
             from app.log import Logger
-            Logger.log('[PS > process_message] DF 기타 오류!', 'ERROR', 'DETAILS: {0}'.format(e))
+            Logger.log('[PS > process_message] DF 오류!', 'ERROR', 'DETAILS: {0}'.format(e))
             fm.send(
                 user.uid,
                 '죄송합니다, 급식봇에 오류가 발생했습니다.\n'
@@ -92,12 +69,12 @@ class Processing:
 
         elif intent == 'Action.GetMeal':    # 급식
             # i. 엔티티 추출 및 가공
-            # 날짜 엔티티가 비어있는 경우 오늘 날짜로 만들어버리기
-            if df_result['queryResult']['parameters']['date-time'] == '':
-                d = datetime.datetime.now(pytz.timezone('Asia/Seoul'))
-                df_result['queryResult']['parameters']['date-time'] = d.strftime('%Y-%m-%d') + 'T12:00:00+09:00'
+            entities = df_result['entities']
 
-            entities = df_result['queryResult']['parameters']
+            # 날짜 엔티티가 비어있는 경우 오늘 날짜로 만들어버리기
+            if entities['date-time'] == '':
+                d = datetime.datetime.now(pytz.timezone('Asia/Seoul'))
+                entities['date-time'] = d.strftime('%Y-%m-%d') + 'T12:00:00+09:00'
 
             # mealtime 변환
             if entities['MealTime'] == '조식':
@@ -215,6 +192,7 @@ class Processing:
         # 1. 오브젝트 만들기
         from app.facebook import FacebookMessenger
         fm = FacebookMessenger(g_config)
+        fm.typing(user.uid)
 
         from app.log import Logger
         Logger.log('[PS > process_postback] 요청: {0}->\'{1}\''.format(user.uid, payload))
@@ -300,7 +278,7 @@ class Processing:
             if len(meal) != 0:  # 급식이 존재할 때
                 meal_text = ''
                 for menu in meal:
-                    meal_text = meal_text + menu
+                    meal_text = meal_text + menu + '\n'
                 meal_text = meal_text.rstrip()
 
                 fm.send(

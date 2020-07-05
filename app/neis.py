@@ -31,7 +31,7 @@ class NEIS:
 
         else:
             result = []
-            for school in data['schoolInfo'][2]['row']:
+            for school in data['schoolInfo'][1]['row']:
                 sch = self.School(
                     school['SCHUL_NM'],
                     '{0}+{1}'.format(school['ATPT_OFCDC_SC_CODE'], school['SD_SCHUL_CODE']),
@@ -72,12 +72,12 @@ class NEIS:
 
         else:
             sch = self.School(
-                data['schoolInfo'][2]['row'][0]['SCHUL_NM'],
-                data['schoolInfo'][2]['row'][0]['ATPT_OFCDC_SC_CODE'] +
-                '+' + data['schoolInfo'][2]['row'][0]['SD_SCHUL_CODE'],
-                data['schoolInfo'][2]['row'][0]['ATPT_OFCDC_SC_CODE'],
-                data['schoolInfo'][2]['row'][0]['LCTN_SC_NM'],
-                data['schoolInfo'][2]['row'][0]['ORG_RDNMA'],
+                data['schoolInfo'][1]['row'][0]['SCHUL_NM'],
+                data['schoolInfo'][1]['row'][0]['ATPT_OFCDC_SC_CODE'] +
+                '+' + data['schoolInfo'][1]['row'][0]['SD_SCHUL_CODE'],
+                data['schoolInfo'][1]['row'][0]['ATPT_OFCDC_SC_CODE'],
+                data['schoolInfo'][1]['row'][0]['LCTN_SC_NM'],
+                data['schoolInfo'][1]['row'][0]['ORG_RDNMA'],
                 self.key
             )
             return sch
@@ -123,5 +123,5 @@ class NEIS:
                 return []
 
             else:
-                menus = data['mealServiceDietInfo'][2]['row'][0]['DDISH_NM'].split('<br/>')
+                menus = data['mealServiceDietInfo'][1]['row'][0]['DDISH_NM'].split('<br/>')
                 return menus
