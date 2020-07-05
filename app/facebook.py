@@ -61,7 +61,8 @@ class FacebookMessenger:
 
             for card in thing.payload:
                 for key in card:
-                    card[key] = card[key].replace('%rootdir%', self.site_root)
+                    if type(card[key]) == str:
+                        card[key] = card[key].replace('%rootdir%', self.site_root)
                 body['message']['attachment']['payload']['elements'].append(card)
 
         # 빠른 답장 추가하기
