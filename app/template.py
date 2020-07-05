@@ -29,22 +29,26 @@ class Templates:
 
         after_meal = [
             {
-                'text': '오늘 급식',
+                'content_type': 'text',
+                'title': '오늘 급식',
                 'payload': '',
                 'image_url': ''
             },
             {
-                'text': '굿!🎉',
+                'content_type': 'text',
+                'title': '굿!🎉',
                 'payload': '',
                 'image_url': ''
             },
             {
-                'text': '🚨버그 신고하기',
+                'content_type': 'text',
+                'title': '🚨버그 신고하기',
                 'payload': 'BUGREPORT',
                 'image_url': ''
             },
             {
-                'text': '💾소스 코드 보기',
+                'content_type': 'text',
+                'title': '💾소스 코드 보기',
                 'payload': '',
                 'image_url': ''
             }
@@ -52,17 +56,20 @@ class Templates:
 
         default = [
             {
-                'text': '오늘 급식',
+                'content_type': 'text',
+                'title': '오늘 급식',
                 'payload': '',
                 'image_url': ''
             },
             {
-                'text': '내일 급식',
+                'content_type': 'text',
+                'title': '내일 급식',
                 'payload': '',
                 'image_url': ''
             },
             {
-                'text': '굿!🎉',
+                'content_type': 'text',
+                'title': '굿!🎉',
                 'payload': '',
                 'image_url': ''
             },
@@ -73,12 +80,14 @@ class Templates:
                 'image_url': ''
             },
             {
-                'text': '🚨버그 신고하기',
+                'content_type': 'text',
+                'title': '🚨버그 신고하기',
                 'payload': 'BUGREPORT',
                 'image_url': ''
             },
             {
-                'text': '💾소스 코드 보기',
+                'content_type': 'text',
+                'title': '💾소스 코드 보기',
                 'payload': '',
                 'image_url': ''
             }
@@ -86,12 +95,14 @@ class Templates:
 
         intro = [
             {
-                'text': '그래!😉',
+                'content_type': 'text',
+                'title': '그래!😉',
                 'payload': 'INTRO_MORE',
                 'image_url': ''
             },
             {
-                'text': '됬고, 사용법이나 알려줘.',
+                'content_type': 'text',
+                'title': '됬고, 사용법이나 알려줘.',
                 'payload': 'HELP',
                 'image_url': ''
             }
