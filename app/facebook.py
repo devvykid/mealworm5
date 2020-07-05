@@ -69,7 +69,7 @@ class FacebookMessenger:
             for qr in quick_replies.payload:
                 body['message']['quick_replies'] = []
                 body['message']['quick_replies'].append(qr)
-        else:
+        elif quick_replies is not None:
             for qr in quick_replies:
                 body['message']['quick_replies'] = []
                 body['message']['quick_replies'].append(qr)
