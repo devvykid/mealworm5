@@ -56,7 +56,7 @@ class Processing:
             fm.send(user.uid, '고마워요!', Templates.QuickReplies.default)
 
         elif intent == 'Action.Report':
-            return self.process_postback(user, 'BUG_REPORT', g_config)
+            return self.process_postback(user, 'BUGREPORT', g_config)
 
         elif intent == 'Action.Help':
             return self.process_postback(user, 'HELP', g_config)
@@ -311,7 +311,7 @@ class Processing:
 
             return user
 
-        elif payload == 'BUG_REPORT':
+        elif payload == 'BUGREPORT':
             fm.send(user.uid, '아래 버튼을 눌러서 신고해주세요.')
 
             tmp_c = Templates.Cards.bug_report
