@@ -66,13 +66,9 @@ class FacebookMessenger:
 
         # 빠른 답장 추가하기
         if isinstance(quick_replies, MessageElements.QuickReply):
-            for qr in quick_replies.payload:
-                body['message']['quick_replies'] = []
-                body['message']['quick_replies'].append(qr)
+            body['message']['quick_replies'] = quick_replies.payload
         elif quick_replies is not None:
-            for qr in quick_replies:
-                body['message']['quick_replies'] = []
-                body['message']['quick_replies'].append(qr)
+            body['message']['quick_replies'] = quick_replies
 
         response = requests.post(self.endpoint + self.access_token, data=json.dumps(body), headers=headers)
 
