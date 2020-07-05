@@ -125,7 +125,19 @@ def webhook():
                     # 1-1. 포스트백 처리
                     if e.get('postback'):
                         if e['postback'].get('payload'):
-                            ps.process_postback(usr, e['postback']['payload'], g_config)
+                            usr = ps.process_postback(usr, e['postback']['payload'], g_config)
+                            try:
+                                fs.save_user(usr)
+                                Logger.log(
+                                    '유저 세이브 완료: {0}'.format(usr.uid),
+                                    'NOTICE'
+                                )
+                            except Exception as e:
+                                Logger.log(
+                                    'Firestore 유저 세이브 중 오류 발생: {0}'.format(str(e)),
+                                    'ERROR',
+                                    'RECIPIENT: {0}'.format(usr.uid)
+                                )
                         continue
 
                     # 1-2. 메시지 처리
@@ -133,28 +145,50 @@ def webhook():
                         # 1-2-1. 빠른 답장 포스트백 처리
                         if e['message'].get('quick_reply'):
                             if e['message']['quick_reply'].get('payload'):
-                                ps.process_postback(usr, e['message']['quick_reply']['payload'], g_config)
+                                usr = ps.process_postback(usr, e['message']['quick_reply']['payload'], g_config)
+                                try:
+                                    fs.save_user(usr)
+                                    Logger.log(
+                                        '유저 세이브 완료: {0}'.format(usr.uid),
+                                        'NOTICE'
+                                    )
+                                except Exception as e:
+                                    Logger.log(
+                                        'Firestore 유저 세이브 중 오류 발생: {0}'.format(str(e)),
+                                        'ERROR',
+                                        'RECIPIENT: {0}'.format(usr.uid)
+                                    )
                                 continue
 
                         # 1-2-2. 텍스트 메시지 처리
                         if e['message'].get('text'):
-                            ps.process_message(usr, e['message']['text'], g_config)
+                            usr = ps.process_message(usr, e['message']['text'], g_config)
+                            try:
+                                fs.save_user(usr)
+                                Logger.log(
+                                    '유저 세이브 완료: {0}'.format(usr.uid),
+                                    'NOTICE'
+                                )
+                            except Exception as e:
+                                Logger.log(
+                                    'Firestore 유저 세이브 중 오류 발생: {0}'.format(str(e)),
+                                    'ERROR',
+                                    'RECIPIENT: {0}'.format(usr.uid)
+                                )
                             continue
 
                         # 1-2-3. 첨부파일 등이 있는 메시지
                         if e['message'].get('attachments'):
                             ps.process_postback(usr, 'ATTACHMENTS', g_config)
-                            continue
 
-                    logger = Logger()
                     try:
                         fs.save_user(usr)
-                        logger.log(
+                        Logger.log(
                             '유저 세이브 완료: {0}'.format(usr.uid),
                             'NOTICE'
                         )
                     except Exception as e:
-                        logger.log(
+                        Logger.log(
                             'Firestore 유저 세이브 중 오류 발생: {0}'.format(str(e)),
                             'ERROR',
                             'RECIPIENT: {0}'.format(usr.uid)
@@ -166,9 +200,7 @@ def webhook():
             traceback.print_exc()
 
             try:
-                logger = Logger()
-                # 로거 (Lint 정상)
-                logger.log('치명적 오류 발생!! RECIPIENT: {0}'.format(e['sender']['id']), level='ERROR', details=str(e))
+                Logger.log('치명적 오류 발생!! RECIPIENT: {0}'.format(e['sender']['id']), level='ERROR', details=str(e))
 
                 fm = FacebookMessenger(g_config)
                 fm.send(

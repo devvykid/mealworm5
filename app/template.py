@@ -36,6 +36,12 @@ class Templates:
             },
             {
                 'content_type': 'text',
+                'title': '내일 급식',
+                'payload': '',
+                'image_url': ''
+            },
+            {
+                'content_type': 'text',
                 'title': '굿!🎉',
                 'payload': '',
                 'image_url': ''

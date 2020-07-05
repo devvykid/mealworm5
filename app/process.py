@@ -35,7 +35,7 @@ class Processing:
                 '다시 시도해 주시고 오류가 지속되면 아래의 \'버그 신고하기\'를 이용해 주세요.',
                 Templates.QuickReplies.after_system_error
             )
-            return
+            return user
 
         # 3. Intent 분기
         if intent == 'Action.SourceCode':
@@ -105,7 +105,7 @@ class Processing:
                             'RECIPIENT: {0}, DETAILS: {1}, VALUE: {2}'.format(user.uid, str(e), entities['SchoolName'])
                         )
 
-                        return
+                        return user
 
                     if len(school_list) == 0:  # 일치하는 학교가 없는 경우
                         fm.send(
@@ -113,7 +113,7 @@ class Processing:
                             '학교 \'{0}\'를 찾을 수 없어요.'.format(entities['SchoolName']),
                             Templates.QuickReplies.after_user_error
                         )
-                        return
+                        return user
 
                     elif len(school_list) > 1:  # 나이스에서 2개 이상의 학교를 찾음
                         # 안내 메시지 보내기
@@ -147,7 +147,7 @@ class Processing:
                         # 유저한테 보내기
                         card = Elements.Card(school_cards)
                         fm.send(user.uid, card)
-                        return
+                        return user
 
                     else:  # 힉교가 정상적으로 하나만 나옴
                         sch = school_list[0]
@@ -178,14 +178,14 @@ class Processing:
                     '이전에 요청한 학교가 없습니다. 처음 요청 시에는 학교 이름을 포함해서 요청해 주세요.',
                     Templates.QuickReplies.after_user_error
                 )
-                return
+                return user
 
         else:  # Unknown Intent
             Logger.log('[PS > process_message] 알 수 없는 인텐트입니다: {0}. RECIPIENT: {1}'.format(intent, user.uid), 'WARN')
             fm.send(user.uid, '무슨 뜻인지 잘 모르겠어요.', Templates.QuickReplies.after_user_error)
-            return
+            return user
 
-        return
+        return user
 
     @staticmethod
     def process_postback(user, payload, g_config):
@@ -207,12 +207,12 @@ class Processing:
                 '이제 제가 할 수 있는 일을 알아볼까요?',
                 Templates.QuickReplies.intro
             )
-            return
+            return user
 
         elif payload == 'INTRO_MORE':
             card = Elements.Card(Templates.Cards.intro_features)
             fm.send(user.uid, card)
-            return
+            return user
 
         # 사용법
         elif payload == 'HELP':
@@ -237,7 +237,7 @@ class Processing:
             # 3/3 (Text)
             fm.send(user.uid, '혹시라도 잘 이해가 가지 않으시면 그냥 학교 이름을 입력해 보세요.')
 
-            return
+            return user
 
         # 급식 급식 급식!
         elif payload.startswith('M_'):
@@ -253,11 +253,11 @@ class Processing:
             except ValueError as e:
                 fm.send(user.uid, '나이스 조회중 오류가 발생했습니다: 중복 조회되었습니다.', Templates.QuickReplies.after_system_error)
                 Logger.log('[PS > process_postback] 나이스 재조회중 학교 중복 오류!', 'ERROR', str(e))
-                return
+                return user
             except Exception as e:
                 fm.send(user.uid, '나이스 조회중 오류가 발생했습니다: 알 수 없는 오류.', Templates.QuickReplies.after_system_error)
                 Logger.log('[PS > process_postback] 나이스 재조회중 기타 오류!', 'ERROR', str(e))
-                return
+                return user
 
             date = datetime.datetime.strptime(tmp_date, '%Y-%m-%d')
             try:
@@ -265,7 +265,7 @@ class Processing:
             except Exception as e:
                 Logger.log('[PS > process_postback] 급식 조회 중 오류!', 'ERROR', str(e))
                 fm.send(user.uid, '급식 조회중 오류가 발생했습니다: 처리되지 않은 오류.', Templates.QuickReplies.after_system_error)
-                return
+                return user
 
             if int(mealtime) == 1:
                 mt_text = '아침'
@@ -309,7 +309,7 @@ class Processing:
                     Templates.QuickReplies.after_meal
                 )
 
-            return
+            return user
 
         elif payload == 'BUG_REPORT':
             fm.send(user.uid, '아래 버튼을 눌러서 신고해주세요.')
@@ -319,10 +319,10 @@ class Processing:
             card = Elements.Card(tmp_c)
             fm.send(user.uid, card, Templates.QuickReplies.after_action)
 
-            return
+            return user
 
         elif payload == 'ATTACHMENTS':
             fm.send(user.uid, ':)', Templates.QuickReplies.after_action)
-            return
+            return user
 
-        return
+        return user
