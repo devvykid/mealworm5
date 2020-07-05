@@ -3,9 +3,10 @@ import logging
 
 class Logger:
     def __init__(self):
-        pass
+        return
 
-    def log(self, payload, level='NOTICE', details=''):
+    @staticmethod
+    def log(payload, level='NOTICE', details=''):
         # Three log levels: NOTICE, WARN, ERROR
         # TODO: Timestamp
         # TODO: Make It Async
@@ -17,7 +18,7 @@ class Logger:
             elif level == 'NOTICE':
                 logging.info(payload + details)
         except Exception as e:
-            logging.error('Error when logging: {0}'.format(e))
+            logging.error('[Logger > log] 로깅 중 오류가 발생하였습니다: {0}'.format(e))
 
         # TODO: Implement Send Mail (GAE)
 

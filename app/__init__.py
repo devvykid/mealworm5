@@ -14,34 +14,28 @@ import requests
 import json
 
 from app.process import Processing
-from app.user import User
 from app.firestore import FireStoreController
 from app.facebook import FacebookMessenger
-from app.logger import Logger
+from app.log import Logger
+from app.user import User
+
 
 # 메타데이터
-__author__ = "JeongYeon Park (devvykid)"
-__ver__ = "20200605-rev1-fix0"
+__author__ = 'JeongYeon Park (devvykid)'
 
-# config.ini 읽어오기
+# 초기화
 g_config = configparser.ConfigParser()
 g_config.read('config.ini')
 
-# 짜잔
 app = Flask(__name__, static_url_path='/static')
 
-# 객체 선언하기
-ps = Processing(g_config)
-fs = FireStoreController(g_config)
-fm = FacebookMessenger(g_config)
-
-logger = Logger()
+ps = Processing()
 
 
 @app.route('/')
 def hello_world():
     # Make it Ra1n
-    logger.log('Hello, world!', 'NOTICE', 'This is a test.')
+    Logger.log('Hello, world!', 'NOTICE', 'This is a test.')
     return '<code>make it ra1n</code>'
 
 
@@ -49,8 +43,8 @@ def hello_world():
 def old_deprecated():
     if request.method == 'GET':
         # Verification Test
-        if request.args.get("hub.verify_token") == g_config['FACEBOOK']['OLD_VERIFY_TOKEN']:
-            return request.args.get("hub.challenge")
+        if request.args.get('hub.verify_token') == g_config['FACEBOOK']['OLD_VERIFY_TOKEN']:
+            return request.args.get('hub.challenge')
         else:
             return 'Verification Failed!'
 
@@ -66,27 +60,27 @@ def old_deprecated():
                         }
 
                         body = {
-                            "recipient": {
-                                "id": e['sender']['id']
+                            'recipient': {
+                                'id': e['sender']['id']
                             },
-                            "message": {
-                                "text": "이 버전의 급식봇은 서비스가 종료되었습니다. 새로운 급식봇5를 이용해 주세요!\n"
-                                        "https://facebook.com/mealworm05/\n"
-                                        "시작하기 전에 페이지 좋아요&팔로우는 필수! 아시죠?😎"
+                            'message': {
+                                'text': '이 버전의 급식봇은 서비스가 종료되었습니다. 새로운 급식봇5를 이용해 주세요!\n'
+                                        'https://facebook.com/mealworm05/\n'
+                                        '시작하기 전에 페이지 좋아요&팔로우는 필수! 아시죠?😎'
                             }
                         }
 
                         requests.post(
-                            "https://graph.facebook.com/v3.3/me/messages?access_token=" +
+                            'https://graph.facebook.com/v3.3/me/messages?access_token=' +
                             g_config['FACEBOOK']['OLD_ACCESS_TOKEN'],
                             data=json.dumps(body),
                             headers=headers
                         )
 
         except Exception as e:
-            print("Fuck: {}".format(str(e)))
+            print('Fuck: {}'.format(str(e)))
 
-        logger.log('Deprecated Request Processed.')
+        Logger.log('Deprecated Request Processed.')
         return 'Deprecated Request Processed.'
 
 
@@ -94,37 +88,44 @@ def old_deprecated():
 def webhook():
     if request.method == 'GET':
         # Verification Test
-        if request.args.get("hub.verify_token") == g_config['FACEBOOK']['VERIFY_TOKEN']:
-            return request.args.get("hub.challenge")
+        if request.args.get('hub.verify_token') == g_config['FACEBOOK']['VERIFY_TOKEN']:
+            return request.args.get('hub.challenge')
         else:
             return 'Verification Failed!'
 
     if request.method == 'POST':
         try:
+            fm = FacebookMessenger(g_config)
+            fs = FireStoreController()
+
             req = request.get_json()
 
             for event in req['entry']:
-                for e in event['messaging']:    # 요청의 단위 시작
+                # 요청의 단위
+                for e in event['messaging']:
                     # 0-0. 고스트 확인
                     if req.get('message', {}).get('is_echo'):
                         continue
 
-                    # 0-1. 디비에서 불러오기
-                    user = fs.get_user(req['sender']['id'])
+                    # 0-1: Typing
+                    fm.typing(req['sender']['id'])
+
+                    # 1. 디비에서 불러오기
+                    usr = fs.get_user(req['sender']['id'], g_config)
 
                     # 0-1-1. 신규 유저인 경우
-                    if user is None:
-                        logger.log("%s는 신규 유저입니다. 생성합니다..." % str(req['sender']['id']))
+                    if usr is None:
+                        Logger.log('[APP > webhook] UID: {0} 생성합니다...'.format(req['sender']['id']))
                         user_config = {
-                            "new_user": True,
-                            "uid": req['sender']['id']
+                            'new_user': True,
+                            'uid': req['sender']['id']
                         }
-                        user = User(user_config, g_config)
+                        usr = User(user_config, g_config)
 
                     # 1-1. 포스트백 처리
                     if e.get('postback'):
                         if e['postback'].get('payload'):
-                            ps.process_postback(user, e['postback']['payload'])
+                            ps.process_postback(usr, e['postback']['payload'], g_config)
                         continue
 
                     # 1-2. 메시지 처리
@@ -132,41 +133,44 @@ def webhook():
                         # 1-2-1. 빠른 답장 포스트백 처리
                         if e['message'].get('quick_reply'):
                             if e['message']['quick_reply'].get('payload'):
-                                ps.process_postback(user, e['message']['quick_reply']['payload'])
+                                ps.process_postback(usr, e['message']['quick_reply']['payload'], g_config)
                                 continue
 
                         # 1-2-2. 텍스트 메시지 처리
                         if e['message'].get('text'):
-                            ps.process_message(user, e['message']['text'])
+                            ps.process_message(usr, e['message']['text'], g_config)
                             continue
 
                         # 1-2-3. 첨부파일 등이 있는 메시지
                         if e['message'].get('attachments'):
-                            ps.process_postback(user, 'ATTACHMENTS')
+                            ps.process_postback(usr, 'ATTACHMENTS', g_config)
                             continue
 
+                    logger = Logger()
                     try:
-                        fs.save_user(user)
+                        fs.save_user(usr)
                         logger.log(
-                            '유저 세이브 완료: {0}'.format(user.uid),
+                            '유저 세이브 완료: {0}'.format(usr.uid),
                             'NOTICE'
                         )
                     except Exception as e:
                         logger.log(
                             'Firestore 유저 세이브 중 오류 발생: {0}'.format(str(e)),
                             'ERROR',
-                            'RECIPIENT: {0}'.format(user.uid)
+                            'RECIPIENT: {0}'.format(usr.uid)
                         )
 
-            return {"result", "fuck yeah!"}
+            return {'result', 'fuck yeah!'}
 
         except Exception as e:
             traceback.print_exc()
 
             try:
+                logger = Logger()
                 # 로거 (Lint 정상)
-                logger.log("치명적 오류 발생!! RECIPIENT: {0}".format(req['sender']['id']), level="ERROR", details=str(e))
+                logger.log('치명적 오류 발생!! RECIPIENT: {0}'.format(req['sender']['id']), level='ERROR', details=str(e))
 
+                fm = FacebookMessenger(g_config)
                 fm.send(
                     req['sender']['id'],
                     '죄송합니다, 급식봇에 처리되지 않은 오류가 발생했습니다.\n'
@@ -179,14 +183,14 @@ def webhook():
                 pass
 
             return {
-                "result": "screwed"
+                'result': 'screwed'
             }
 
 
 @app.route('/support/bugreport', methods=['GET', 'POST'])
 def bugreport():
     if request.method == 'GET':
-        u_id = request.args.get("id")
+        u_id = request.args.get('id')
         if u_id:
             return render_template('bugreport.html', id=u_id)
         else:
@@ -205,6 +209,7 @@ def bugreport():
             if uid != request.args.get('id'):
                 raise ValueError
 
+            logger = Logger()
             logger.bugreport(uid, title, details, contact)
 
             return render_template('success.html')
@@ -214,4 +219,3 @@ def bugreport():
 
         except Exception as e:
             return render_template('bad.html', details='처리되지 않은 오류입니다: ' + str(e))
-

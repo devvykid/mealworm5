@@ -1,5 +1,5 @@
 runtime: python38
-entrypoint: gunicorn -b :80 -w 1 main:app
+entrypoint: gunicorn -b :$PORT -w 1 main:app
 
 instance_class: F1
 

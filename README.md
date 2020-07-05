@@ -70,7 +70,10 @@ a. 는 당연히 개나 소나 ~~열심히 독스를 찾아서~~ 알아서 하�
 b. 는 제가 귀찮아서 설명하지 않겠습니다(히힛). 대신 예의상 [링크](https://firebase.google.com/docs/firestore/quickstart?hl=ko#python
 ) [몇](https://cloud.google.com/docs/authentication/getting-started#command-line) [개](https://cloud.google.com/docs/authentication?hl=ko)를 남겨 놓겠습니다.  
   
-아, 왜 DialogFlow는 이런 방식으로 안 했냐고요? 귀찮아서요.
+아, 왜 DialogFlow는 이런 방식으로 안 했냐고요? 귀찮아서요.  
+  
+###### 개발자가 빼먹은 경고
+app 패키지의 firestore.py 위에 있는 project_id 값을 **변경하세요**. 성능상의 이유로 config.ini 에서 불러오지 않습니다.
 ### 파이썬 venv 설정하기
 venv를 설정하고 ```pip install -r requirements.txt```를 실행하여 프로젝트의 의존성을 설치하세요. mw5는 python3.6 이상 환경만 지원합니다.
 
