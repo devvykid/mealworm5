@@ -120,7 +120,7 @@ class Processing:
                         fm.send(user.uid, '여러 학교가 검색되었어요. 원하는 학교의 버튼을 선택해 주세요.')
                         fm.typing(user.uid)
 
-                        [_, month, day] = entities['date-time'].split('T')[0].split['-']
+                        [_, month, day] = entities['date-time'].split('T')[0].split('-')
 
                         # 카드 만들어서 붙이기
                         school_cards = []
