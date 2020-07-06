@@ -62,7 +62,7 @@ class Processing:
             return self.process_postback(user, 'HELP', g_config)
 
         elif intent == 'Communication.Hi':
-            fm.send(user.uid, '안녕하세요, {{user_first_name}}님!', Templates.QuickReplies.default)
+            fm.send(user.uid, '안녕하세요, {0}님!'.format(user.name), Templates.QuickReplies.default)
 
         elif intent == 'Communication.Bye':
             fm.send(user.uid, '👋', Templates.QuickReplies.default)
@@ -199,7 +199,7 @@ class Processing:
 
         # 2. 페이로드 분기
         if payload == 'FACEBOOK_WELCOME':
-            fm.send(user.uid, '안녕하세요, {{user_first_name}}님! 만나서 반가워요🤗')
+            fm.send(user.uid, '안녕하세요, {0}님! 만나서 반가워요🤗'.format(user.name))
             fm.send(user.uid, '저는 급식봇이라고 해요.')
             fm.send(
                 user.uid,

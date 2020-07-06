@@ -172,7 +172,7 @@ class Templates:
                     {
                         'type': 'postback',
                         'title': '[🖖 곧 찾아옵니다!]',
-                        'payload': ''
+                        'payload': 'PLACEHOLDER'
                     }
                 ]
             }
