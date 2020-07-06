@@ -156,7 +156,13 @@ class Templates:
                 'title': '알러지 정보',
                 'image_url': '%rootdir%/static/meal.jpg',
                 'subtitle': '알러지가 있으셔도 걱정 마세요. 급식봇이 알아서 챙겨 줄 거에요.',
-                'buttons': []
+                'buttons': [
+                    {
+                        'type': 'postback',
+                        'title': '어떻게 쓰는지 보기',
+                        'payload': 'HELP'
+                    }
+                ]
             },
             {
                 'title': '[준비중] 급식 구독',
