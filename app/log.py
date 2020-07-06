@@ -1,14 +1,19 @@
 import logging
+import datetime
+import pytz
 
 
 class Logger:
     def __init__(self):
-        pass
+        return
 
-    def log(self, payload, level='NOTICE', details=''):
+    @staticmethod
+    def log(payload, level='NOTICE', details=''):
         # Three log levels: NOTICE, WARN, ERROR
         # TODO: Timestamp
         # TODO: Make It Async
+        print('[{0}] [{1}] {2} {3}'.format(datetime.datetime.now(pytz.timezone('Asia/Seoul')).strftime('%Y%m%d-%H%M%S'),
+                                           level, payload, details))
         try:
             if level == 'ERROR':
                 logging.error(payload + details)
@@ -17,7 +22,7 @@ class Logger:
             elif level == 'NOTICE':
                 logging.info(payload + details)
         except Exception as e:
-            logging.error('Error when logging: {0}'.format(e))
+            logging.error('[Logger > log] 로깅 중 오류가 발생하였습니다: {0}'.format(e))
 
         # TODO: Implement Send Mail (GAE)
 

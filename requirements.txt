@@ -3,6 +3,7 @@ cachetools==4.1.1
 certifi==2019.11.28
 chardet==3.0.4
 Click==7.0
+dialogflow==1.0.0
 firebase-admin==4.3.0
 Flask==1.1.1
 google-api-core==1.21.0
@@ -31,3 +32,4 @@ six==1.15.0
 uritemplate==3.0.1
 urllib3==1.25.8
 Werkzeug==1.0.0
+gunicorn
