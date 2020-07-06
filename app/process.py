@@ -331,7 +331,7 @@ class Processing:
                     fm.send(user.uid, msg_str[rand_num])
 
                 # 급식을 보낸다
-                fm.send(user.uid, '{0}\n{1}'.format(meal_id[-4:], meal_text), Templates.QuickReplies.after_meal)
+                fm.send(user.uid, '급식 #{0}:\n{1}'.format(meal_id[-4:], meal_text), Templates.QuickReplies.after_meal)
 
                 if fs_meal is None:
                     # FS에 급식을 세이브한다.
