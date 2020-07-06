@@ -296,7 +296,7 @@ class Processing:
 
                 # 랜덤으로 보내기
                 from random import randint
-                rand_num = randint(0, 9)
+                rand_num = randint(0, 13)
 
                 if rand_num == 0:
                     fm.send(
@@ -326,7 +326,11 @@ class Processing:
                         '후후후...',
                         '어디서 주웠어요.',
                         '오다가 까먹을 뻔했어요',
-                        '후훗'
+                        '후훗',
+                        '우웁!',
+                        '무슨 말을 할지 모르겠어요.',
+                        '맛있게 드세요!',
+                        '정~말 맛있겠네요'
                     ]
                     fm.send(user.uid, msg_str[rand_num])
 
