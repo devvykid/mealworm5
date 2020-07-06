@@ -84,18 +84,19 @@ class FireStoreController:
 
     @staticmethod
     def get_meal(school_code, date, mealtime):
-        doc_ref = db.collection('meal')\
+        docs = db.collection('meal')\
             .where('school_code', '==', school_code)\
             .where('date', '==', date)\
-            .where('mealtime', '==', int(mealtime))
+            .where('mealtime', '==', int(mealtime))\
+            .stream()
 
         try:
-            doc = doc_ref.get()
-            doc_dict = doc.to_dict()
-
-            print(doc_dict)
-
-            return doc_dict
+            if len(docs) != 1:
+                from app.log import Logger
+                Logger.log('[FS > get_user] 급식이 DB에 없습니다. (1)', 'INFO', str(len(docs)))
+                return None
+            for doc in docs:
+                return doc.to_dict()
 
         except Exception as e:
             from app.log import Logger
