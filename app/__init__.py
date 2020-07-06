@@ -36,7 +36,7 @@ ps = Processing()
 def hello_world():
     # Make it Ra1n
     Logger.log('Hello, world!', 'NOTICE', 'This is a test.')
-    return '<code>make it ra1n</code>'
+    return '<code>내 코드는 퍄퍄퍄!</code>'
 
 
 @app.route('/old', methods=['GET', 'POST'])
