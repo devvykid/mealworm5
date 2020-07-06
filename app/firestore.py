@@ -1,4 +1,5 @@
 import datetime
+import pytz
 
 from app.user import User
 
@@ -71,6 +72,7 @@ class FireStoreController:
     def save_meal(user, meal):
         try:
             doc_ref = db.collection('meal').document(meal['meal_id'])
+            meal['created_date'] = datetime.datetime.now(pytz.timezone('Asia/Seoul')).strftime('%Y-%m-%d-%H-%M-%S')
             doc_ref.set(meal)
         except Exception as e:
             from app.log import Logger
