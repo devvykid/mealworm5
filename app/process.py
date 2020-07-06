@@ -241,8 +241,13 @@ class Processing:
 
         # 급식 급식 급식!
         elif payload.startswith('M_'):
+            # user.use_count 를 올린다.
+            user.use_count = user.use_count + 1
+
+            # 파라미터 값을 추출한다.
             [_, school_code, tmp_date, mealtime] = payload.split('_')
             user.last_school_code = school_code
+            date = datetime.datetime.strptime(tmp_date, '%Y-%m-%d')
 
             # 급식 가져오기
             from app.neis import NEIS
@@ -259,13 +264,21 @@ class Processing:
                 Logger.log('[PS > process_postback] 나이스 재조회중 기타 오류!', 'ERROR', str(e))
                 return user
 
-            date = datetime.datetime.strptime(tmp_date, '%Y-%m-%d')
-            try:
-                meal = sch.get_meal(date, int(mealtime))  # Menu 객체의 배열
-            except Exception as e:
-                Logger.log('[PS > process_postback] 급식 조회 중 오류!', 'ERROR', str(e))
-                fm.send(user.uid, '급식 조회중 오류가 발생했습니다: 처리되지 않은 오류.', Templates.QuickReplies.after_system_error)
-                return user
+            from app.firestore import FireStoreController
+            fs = FireStoreController()
+            fs_meal = fs.get_meal(school_code, tmp_date, mealtime)
+            if fs_meal is not None:  # 디비에서 저장된 급식을 가져왔을 때
+                meal = fs_meal['meal']
+                meal_id = fs_meal['meal_id']
+                nutrition = fs_meal['nutrition']
+            else:   # 디비에 없을때
+                meal_id = '#{0}{1}'.format(user.uid, user.use_count)
+                try:
+                    meal, nutrition = sch.get_meal(date, int(mealtime))
+                except Exception as e:
+                    Logger.log('[PS > process_postback] 급식 조회 중 오류!', 'ERROR', str(e))
+                    fm.send(user.uid, '급식 조회중 오류가 발생했습니다: 처리되지 않은 오류.', Templates.QuickReplies.after_system_error)
+                    return user
 
             if int(mealtime) == 1:
                 mt_text = '아침'
@@ -281,24 +294,65 @@ class Processing:
                     meal_text = meal_text + menu + '\n'
                 meal_text = meal_text.rstrip()
 
-                fm.send(
-                    user.uid,
-                    '%d년 %d월 %d일 %s의 %s 메뉴에요! 😀\n%s'
-                    % (
-                        int(date.year),
-                        int(date.month),
-                        int(date.day),
-                        sch.name,
-                        mt_text,
-                        meal_text
-                    ),
-                    Templates.QuickReplies.after_meal
-                )
+                # 랜덤으로 보내기
+                from random import randint
+                rand_num = randint(0, 9)
+
+                if rand_num == 0:
+                    fm.send(
+                        user.uid,
+                        '%d년 %d월 %d일 %s의 %s 메뉴에요! 😀'
+                        % (
+                            int(date.year),
+                            int(date.month),
+                            int(date.day),
+                            sch.name,
+                            mt_text
+                        )
+                    )
+                elif rand_num == 1:
+                    fm.send(
+                        user.uid,
+                        '급식봇을 {0}번째로 사용하고 계시네요!'.format(user.use_count)
+                    )
+                else:
+                    msg_str = [
+                        '',
+                        ''
+                        '반찬 남기지 마세요!',
+                        '흐에에, 귀찮다고...',
+                        '골고루 드세요',
+                        '흐흐흐...',
+                        '후후후...',
+                        '어디서 주웠어요.',
+                        '오다가 까먹을 뻔했어요',
+                        '후훗'
+                    ]
+                    fm.send(user.uid, msg_str[rand_num])
+
+                # 급식을 보낸다
+                fm.send(user.uid, '{0}\n{1}'.format(meal_id[-4:], meal_text))
+
+                if fs_meal is None:
+                    # FS에 급식을 세이브한다.
+                    me = {
+                        'meal_id': meal_id,
+                        'meal': meal,
+                        'school_code': school_code,
+                        'school_name': sch.name,
+                        'date': tmp_date,
+                        'mealtime': int(mealtime),
+                        'nutrition': nutrition
+                    }
+
+                    fs.save_meal(user, me)
+
+                return user
 
             else:  # 밥없음
                 fm.send(
                     user.uid,
-                    '%d년 %d월 %d일 %s의 %s 메뉴가 없어요ㅜㅜ\n(또는 나이스에 등록이 안된 것일수도 있어요)'
+                    '%d년 %d월 %d일 %s의 %s 메뉴가 없어요.\n(또는 나이스에 등록이 안된 것일수도 있어요)'
                     % (
                         int(date.year),
                         int(date.month),

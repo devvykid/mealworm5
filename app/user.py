@@ -15,7 +15,7 @@ class User:
             self.last_school_code = ''
         else:  # Firestore 에서 해동됨
             self.since = user_config['user_details']['since']
-            self.use_count = user_config['user_details']['use_count'] + 1
+            self.use_count = user_config['user_details']['use_count']
             self.name = user_config['user_details']['name']
             self.last_school_code = user_config['last_school_code']
         return

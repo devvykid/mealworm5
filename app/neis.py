@@ -124,4 +124,6 @@ class NEIS:
 
             else:
                 menus = data['mealServiceDietInfo'][1]['row'][0]['DDISH_NM'].split('<br/>')
-                return menus
+                nutrition = data['mealServiceDietInfo'][1]['row'][0]['CAL_INFO'] + '\n' + \
+                    data['mealServiceDietInfo'][1]['row'][0]['NTR_INFO'].replace('<br/>', '\n')
+                return menus, nutrition

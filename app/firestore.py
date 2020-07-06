@@ -66,3 +66,36 @@ class FireStoreController:
             return None
 
         return True
+
+    @staticmethod
+    def save_meal(user, meal):
+        try:
+            doc_ref = db.collection('meal').document(meal['meal_id'])
+            doc_ref.set(meal)
+        except Exception as e:
+            from app.log import Logger
+            Logger.log('[FS > save_meal] 급식 저장 실패. UID: {0}'.format(user.uid), 'ERROR', str(e))
+            return None
+
+        return True
+        pass
+
+    @staticmethod
+    def get_meal(school_code, date, mealtime):
+        doc_ref = db.collection('meal')\
+            .where('school_code', '==', school_code)\
+            .where('date', '==', date)\
+            .where('mealtime', '==', int(mealtime))
+
+        try:
+            doc = doc_ref.get()
+            doc_dict = doc.to_dict()
+
+            print(doc_dict)
+
+            return doc_dict
+
+        except Exception as e:
+            from app.log import Logger
+            Logger.log('[FS > get_user] 급식이 DB에 없습니다.', 'INFO', str(e))
+            return None
