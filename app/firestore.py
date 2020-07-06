@@ -91,13 +91,9 @@ class FireStoreController:
             .stream()
 
         try:
-            if len(docs) != 1:
-                from app.log import Logger
-                Logger.log('[FS > get_user] 급식이 DB에 없습니다. (1)', 'INFO', str(len(docs)))
-                return None
             for doc in docs:
                 return doc.to_dict()
-
+            return None
         except Exception as e:
             from app.log import Logger
             Logger.log('[FS > get_user] 급식이 DB에 없습니다.', 'INFO', str(e))
