@@ -275,6 +275,10 @@ class Processing:
                 meal_id = '#{0}{1}'.format(user.uid, user.use_count)
                 try:
                     meal, nutrition = sch.get_meal(date, int(mealtime))
+                except TypeError:
+                    # 급식이 없음
+                    meal = []
+                    nutrition = None
                 except Exception as e:
                     Logger.log('[PS > process_postback] 급식 조회 중 오류!', 'ERROR', str(e))
                     fm.send(user.uid, '급식 조회중 오류가 발생했습니다: 처리되지 않은 오류.', Templates.QuickReplies.after_system_error)
@@ -306,7 +310,7 @@ class Processing:
                 else:
                     msg_str = [
                         '',         # 0
-                        '꺼-억',     # 1
+                        '이 냄새는 바로!',
                         '반찬 남기지 마세요!',
                         '흐에, 귀찮다고...',
                         '골고루 드세요',
@@ -316,9 +320,9 @@ class Processing:
                         '오다가 까먹을 뻔했어요',
                         '후훗',
                         '우웁!',
-                        '무슨 말을 할지 모르겠어요.',
-                        '맛있게 드세요!',
-                        '정~말 맛있겠네요'
+                        '인간들은 이런 것을 맛있다고 먹는 건가요?',
+                        '맛있게 드세요',
+                        '졸려어... 나도 좀 쉬고 싶다고...'
                     ]
                     fm.send(user.uid, msg_str[rand_num])
 
@@ -348,7 +352,7 @@ class Processing:
             else:  # 밥없음
                 fm.send(
                     user.uid,
-                    '%d년 %d월 %d일 %s의 %s 메뉴가 없어요.\n(또는 나이스에 등록이 안된 것일수도 있어요)'
+                    '%d년 %d월 %d일 %s의 %s 메뉴가 없어요.\n(또는 나이스에 등록이 안된 것일수도 있어요.)'
                     % (
                         int(date.year),
                         int(date.month),

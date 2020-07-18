@@ -98,7 +98,7 @@ class NEIS:
             급식을 가져온다.
             :param date: datetime.date 객체. 급식을 가져올 날짜
             :param time: int. 1: 조식, 2: 중식, 3: 석식
-            :return: Array
+            :return: menus(array), nutrition(str) / None
             """
             url = 'https://open.neis.go.kr/hub/mealServiceDietInfo'
 
@@ -120,10 +120,10 @@ class NEIS:
             data = response.json()
 
             if data.get('RESULT', {}).get('CODE') == 'INFO-200':
-                return []
+                return None
 
             else:
-                menus = data['mealServiceDietInfo'][1]['row'][0]['DDISH_NM'].split('<br/>').replace('.', ',')
+                menus = data['mealServiceDietInfo'][1]['row'][0]['DDISH_NM'].replace('.', ',').split('<br/>')
                 nutrition = data['mealServiceDietInfo'][1]['row'][0]['CAL_INFO'] + '\n' + \
                     data['mealServiceDietInfo'][1]['row'][0]['NTR_INFO'].replace('<br/>', '\n')
                 return menus, nutrition
