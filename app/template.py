@@ -108,7 +108,7 @@ class Templates:
             },
             {
                 'content_type': 'text',
-                'title': '됬고, 사용법이나 알려줘.',
+                'title': '됐고, 사용법이나 알려줘.',
                 'payload': 'HELP',
                 'image_url': ''
             }
@@ -171,7 +171,7 @@ class Templates:
                 'buttons': [
                     {
                         'type': 'postback',
-                        'title': '[🖖 곧 찾아옵니다!]',
+                        'title': '[곧 찾아옵니다!]',
                         'payload': 'PLACEHOLDER'
                     }
                 ]

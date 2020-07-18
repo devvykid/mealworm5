@@ -218,7 +218,7 @@ class Processing:
         elif payload == 'HELP':
             # 1/3 (Text)
             msg_str = '다양한 방법으로 급식을 가져올 수 있어요!\n' \
-                      '예시:' \
+                      '예시:\n' \
                       '> 급식고등학교 내일 저녁\n' \
                       '> 3월 14일 급식고등학교 급식\n' \
                       '> 급식고등학교\n' \
@@ -301,26 +301,14 @@ class Processing:
                 if rand_num == 0:
                     fm.send(
                         user.uid,
-                        '%d년 %d월 %d일 %s의 %s 메뉴에요! 😀'
-                        % (
-                            int(date.year),
-                            int(date.month),
-                            int(date.day),
-                            sch.name,
-                            mt_text
-                        )
-                    )
-                elif rand_num == 1:
-                    fm.send(
-                        user.uid,
                         '급식봇을 {0}번째로 사용하고 계시네요!'.format(user.use_count)
                     )
                 else:
                     msg_str = [
-                        '',
-                        ''
+                        '',         # 0
+                        '꺼-억',     # 1
                         '반찬 남기지 마세요!',
-                        '흐에에, 귀찮다고...',
+                        '흐에, 귀찮다고...',
                         '골고루 드세요',
                         '흐흐흐...',
                         '후후후...',
@@ -335,7 +323,11 @@ class Processing:
                     fm.send(user.uid, msg_str[rand_num])
 
                 # 급식을 보낸다
-                fm.send(user.uid, '급식 #{0}:\n{1}'.format(meal_id[-4:], meal_text), Templates.QuickReplies.after_meal)
+                fm.send(
+                    user.uid,
+                    '{0} {1}/{2}\n급식 #{3}:\n{4}'.format(tmp_date, sch.name, mt_text, meal_id[-6:], meal_text),
+                    Templates.QuickReplies.after_meal
+                )
 
                 if fs_meal is None:
                     # FS에 급식을 세이브한다.
