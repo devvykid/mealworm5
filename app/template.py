@@ -30,6 +30,45 @@ class Templates:
         after_meal = [
             {
                 'content_type': 'text',
+                'title': '영양소 정보 보기',
+                'payload': '',
+                'image_url': ''
+            },
+            {
+                'content_type': 'text',
+                'title': '오늘 급식',
+                'payload': '',
+                'image_url': ''
+            },
+            {
+                'content_type': 'text',
+                'title': '내일 급식',
+                'payload': '',
+                'image_url': ''
+            },
+            {
+                'content_type': 'text',
+                'title': '굿!🎉',
+                'payload': '',
+                'image_url': ''
+            },
+            {
+                'content_type': 'text',
+                'title': '🚨버그 신고하기',
+                'payload': 'BUGREPORT',
+                'image_url': ''
+            },
+            {
+                'content_type': 'text',
+                'title': '💾소스 코드 보기',
+                'payload': '',
+                'image_url': ''
+            }
+        ]
+
+        after_nutrition = [
+            {
+                'content_type': 'text',
                 'title': '오늘 급식',
                 'payload': '',
                 'image_url': ''
@@ -156,6 +195,18 @@ class Templates:
                 'title': '알러지 정보',
                 'image_url': '%rootdir%/static/allergy.jpg',
                 'subtitle': '알러지가 있으셔도 걱정 마세요. 급식봇이 알아서 챙겨 줄 거에요.',
+                'buttons': [
+                    {
+                        'type': 'postback',
+                        'title': '어떻게 쓰는지 보기',
+                        'payload': 'HELP'
+                    }
+                ]
+            },
+            {
+                'title': '영양소 정보',
+                'image_url': '%rootdir%/static/nutrients.jpg',
+                'subtitle': '살찔 걱정은 NO! 급식의 영양소 정보를 급식봇에서 볼 수 있어요.',
                 'buttons': [
                     {
                         'type': 'postback',

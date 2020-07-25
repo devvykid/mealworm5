@@ -18,6 +18,15 @@ class Processing:
         from app.log import Logger
         Logger.log('[PS > process_message] 요청: {0}->\'{1}\''.format(user.uid, req_str))
 
+        # 이스터 에그
+        if req_str.strip() == '올때 메로나':
+            fm.send(
+                user.uid,
+                '응 아니야',
+                Templates.QuickReplies.after_action
+            )
+            return user
+
         # 2. DIALOGFLOW 리퀘스트
         try:
             from app.dialogflow import DialogFlowController
@@ -266,7 +275,7 @@ class Processing:
 
             from app.firestore import FireStoreController
             fs = FireStoreController()
-            fs_meal = fs.get_meal(school_code, tmp_date, mealtime)
+            fs_meal = fs.search_meal(school_code, tmp_date, mealtime)
             if fs_meal is not None:  # 디비에서 저장된 급식을 가져왔을 때
                 meal = fs_meal['meal']
                 meal_id = fs_meal['meal_id']
@@ -274,7 +283,7 @@ class Processing:
             else:   # 디비에 없을때
                 meal_id = '#{0}{1}'.format(user.uid, user.use_count)
                 try:
-                    meal, nutrition = sch.get_meal(date, int(mealtime))
+                    meal, nutrition = sch.search_meal(date, int(mealtime))
                 except TypeError:
                     # 급식이 없음
                     meal = []
@@ -326,11 +335,14 @@ class Processing:
                     ]
                     fm.send(user.uid, msg_str[rand_num])
 
+                quick_replies = Templates.QuickReplies.after_meal
+                quick_replies[0]['payload'] = 'N_{0}'.format(meal_id)
+
                 # 급식을 보낸다
                 fm.send(
                     user.uid,
                     '{0} {1}/{2}\n급식 #{3}:\n{4}'.format(tmp_date, sch.name, mt_text, meal_id[-6:], meal_text),
-                    Templates.QuickReplies.after_meal
+                    quick_replies
                 )
 
                 if fs_meal is None:
@@ -360,10 +372,41 @@ class Processing:
                         sch.name,
                         mt_text
                     ),
-                    Templates.QuickReplies.after_meal
+                    Templates.QuickReplies.after_nutrition
                 )
 
             return user
+
+        # 영양소 정보 보기
+        elif payload.startswith('N_'):
+            # 파라미터 값을 추출한다.
+            [_, meal_code] = payload.split('_')
+
+            # 급식 NO. 를 이용해서 급식을 가져온다.
+            from app.firestore import FireStoreController
+            fs = FireStoreController()
+            meal = fs.get_meal(meal_code)
+            if meal is not None:  # 디비에서 저장된 급식을 가져왔을 때
+                nutrition = meal['nutrition']   # str
+                date = meal['date']
+                school_name = meal['school_name']
+                mealtime_hangul = ['아침', '점심', '저녁'][int(meal['mealtime']) - 1]
+
+                fm.send(
+                    user.uid,
+                    '{0} {1}의 {2} 메뉴: 영양소 정보:\n{3}'.format(
+                        date,
+                        school_name,
+                        mealtime_hangul,
+                        nutrition
+                    ),
+                    Templates.QuickReplies.after_nutrition
+                )
+
+                return user
+            else:  # 디비에 없을때
+                fm.send(user.uid, '죄송해요, DB에서 급식의 영양소 정보를 찾을 수 없었어요.', Templates.QuickReplies.after_system_error)
+                return user
 
         elif payload == 'BUGREPORT':
             fm.send(user.uid, '아래 버튼을 눌러서 신고해주세요.')
