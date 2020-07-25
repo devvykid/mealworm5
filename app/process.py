@@ -283,7 +283,7 @@ class Processing:
             else:   # 디비에 없을때
                 meal_id = '#{0}{1}'.format(user.uid, user.use_count)
                 try:
-                    meal, nutrition = sch.search_meal(date, int(mealtime))
+                    meal, nutrition = sch.get_meal(date, int(mealtime))
                 except TypeError:
                     # 급식이 없음
                     meal = []
