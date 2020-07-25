@@ -27,6 +27,14 @@ class Processing:
             )
             return user
 
+        if '섹스' in req_str:
+            fm.send(
+                user.uid,
+                '잠시 일상을 내려놓고 자신을 돌아보는 시간을 가지는 것은 어떨까요?',
+                Templates.QuickReplies.after_user_error
+            )
+            return user
+
         # 2. DIALOGFLOW 리퀘스트
         try:
             from app.dialogflow import DialogFlowController
