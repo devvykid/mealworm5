@@ -169,6 +169,9 @@ def webhook():
                                     '유저 세이브 완료: {0}'.format(usr.uid),
                                     'NOTICE'
                                 )
+
+                                # 최적화: 전날 급식 캐시 제거
+
                             except Exception as e:
                                 Logger.log(
                                     'Firestore 유저 세이브 중 오류 발생: {0}'.format(str(e)),

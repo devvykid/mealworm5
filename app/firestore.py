@@ -112,3 +112,28 @@ class FireStoreController:
             from app.log import Logger
             Logger.log('[FS > get_meal] {0}번 급식을 DB에서 찾을 수 없습니다!'.format(meal_id), 'ERROR', str(e))
             return None
+
+    @staticmethod
+    def save_bugreport(uid, title, details, contact):
+        try:
+            doc_ref = \
+                db.collection('bugreport')\
+                .document(
+                    '{0}_{1}'.format(
+                        uid,
+                        datetime.datetime.now(tz=pytz.timezone('Asia/Seoul')).strftime('%Y-%m-%d-%H-%M-%S')
+                    )
+                )
+            doc_ref.set({
+                'uid': uid,
+                'title': title,
+                'details': details,
+                'contact': contact
+            })
+
+        except Exception as e:
+            from app.log import Logger
+            Logger.log('[FS > save_bugreport] 버그 리포트 저장 실패. UID: {0}'.format(user.uid), 'ERROR', str(e))
+            return None
+
+        return True
