@@ -107,7 +107,21 @@ class Processing:
                     try:
                         from app.neis import NEIS
                         neis = NEIS(g_config)
-                        school_list = neis.search_school(entities['SchoolName'])
+                        school_name = entities['SchoolName'].strip()
+
+                        # 하드코딩된 화이트리스트에 있으면 대체
+                        school_name_whitelist = {
+                            '한대부중': '한양대학교사범대학부속중학교',
+                            '한대부고': '한양대학교사범대학부속고등학교',
+                            '서울과고': '서울과학고',
+                            '경기과고': '경기과학고',
+                            '세종과고': '세종과학고',
+                            '한성과고': '한성과학고'
+                        }
+                        if school_name in school_name_whitelist:
+                            school_name = school_name_whitelist[school_name]
+
+                        school_list = neis.search_school(school_name)
                     except Exception as e:
                         fm.send(
                             user.uid,
@@ -130,6 +144,7 @@ class Processing:
                             '학교 \'{0}\'를 찾을 수 없어요.'.format(entities['SchoolName']),
                             Templates.QuickReplies.after_user_error
                         )
+
                         return user
 
                     elif len(school_list) > 1:  # 나이스에서 2개 이상의 학교를 찾음
