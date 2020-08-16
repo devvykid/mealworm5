@@ -10,8 +10,8 @@
 페이트리온에서 저를 후원해 주세요! 훌륭한 서비스로 보답하겠습니다.  
 
 ## 개요
-### ~~병맛~~ Disclaimer
-사용자가 급식봇을 사용했는데, 급식이 맛없어서 토했다는가 또는 굶어 죽었다는가 등의 사소한 문제에 대해서는 개발자/기여자는 책임지지 않습니다. 그런 거는 좀 알아서 해결하세요. (뭐 이슈를 넣는 거는 괜찮습니다만)
+### Disclaimer
+급식봇을 사용한 사용자가 급식이 맛없어서 굶어 죽었다는가 등의 사소한 문제에 대해서는 개발자/기여자는 책임지지 않습니다. 그런 거는 좀 알아서 해결하세요. (이슈를 넣는 거는 괜찮습니다만)
 
 #### 잠깐! 코드를 보기 전에
 코드가 더러울 수 있습니다.
@@ -23,8 +23,8 @@
 
 급식봇으로는 전국의 초/중/고등학교의 급식, 알러지 정보 등을 페이스북 메신저 플랫폼을 통해 빠르고 쉽게 조회하실 수 있습니다.
 
-급식봇은 비단뱀이라는 아주 아름다운 언어와 Flask 프레임워크와 Jinja2 템플릿 엔진, 그리고 Dialogflow를 이용해 만들어졌습니다.  
-2019년부터 [나이스 오픈API](https://open.neis.go.kr/portal/mainPage.do)가 개방하면서 pyneis/schoolinfo 대신 API를 사용합니다.
+급식봇은 [비단뱀](https://www.python.org)이라는 아주 아름다운 언어, Flask 프레임워크와 Jinja2 템플릿 엔진, 그리고 Dialogflow를 이용해 만들어졌습니다.  
+2019년부터 [나이스 오픈API](https://open.neis.go.kr/portal/mainPage.do)가 개방하면서 급식 조회 시에 pyneis/schoolinfo 크롤링 기법 대신 나이스 API를 사용합니다.
 
 ## 사용법
 <a href="https://m.me/mealworm05">![Try it out on Facebook Messenger](https://img.shields.io/badge/Messenger-Try%20it%20out-%230078FF?style=for-the-badge&logo=Messenger&logoColor=%23ffffff)</a>  
@@ -55,7 +55,7 @@ DialogFlow 에이전트가 이미 만들어졌다는 가정 하에 진행합니�
   
 google oauth 라이브러리로 자동으로 인증을 진행하기 위해 서비스 계정을 만듭니다.
 1. [DialogFlow Docs](https://dialogflow.com/docs/reference/v2-auth-setup)를 참고하여 'DialogFlow API Client' Role을 가진 Service Account를 생성합니다. 서비스 계정을 생성 후 인증 정보가 담긴 JSON 파일을 다운로드합니다.
-2. dialogflow.py의 코드를 수정합니다 (알아서)
+2. dialogflow.py의 코드를 수정합니다 (인증 관련 독스 읽고 알아서)
   
 API를 호출할 때 인증에 실패하는 경우 서비스 계정에 올바를 Role이 설정되어 있는지 확인하세요.
 
@@ -66,12 +66,12 @@ a. 편하게 개발자랑 똑같은 환경(GAE) 에서 실행합니다.
 b. 홀로 쓸쓸하게 구글 Cloud Docs를 뒤지면서 인증 시스템을 코드에서 수정합니다.  
   
 a. 는 당연히 개나 소나 ~~열심히 독스를 찾아서~~ 알아서 하실 수 있을 것이라 믿습니다.  
-b. 는 제가 귀찮아서 설명하지 않겠습니다(히힛). 대신 예의상 [링크](https://firebase.google.com/docs/firestore/quickstart?hl=ko#python
+b. 는 제가 귀찮아서 설명하지 않겠습니다(구구레카스!). 대신 예의상 [링크](https://firebase.google.com/docs/firestore/quickstart?hl=ko#python
 ) [몇](https://cloud.google.com/docs/authentication/getting-started#command-line) [개](https://cloud.google.com/docs/authentication?hl=ko)를 남겨 놓겠습니다.  
   
 app 패키지의 firestore.py 위에 있는 project_id 값을 **변경하세요**. 성능상의 이유로 config.ini 에서 불러오지 않습니다.
 ### 파이썬 venv 설정하기
-venv를 설정하고 ```pip install -r requirements.txt```를 실행하여 프로젝트의 의존성을 설치하세요. mw5는 python3.6 이상 환경만 지원합니다.
+venv를 설정하고 ```pip install -r requirements.txt```를 실행하여 프로젝트의 의존성을 설치하세요. mw5는 python3.7 이상 환경만 지원합니다.
 
 ### 실행하기
 app.py를 실행하세요. ```localhost```에서 서버가 런칭됩니다.  
@@ -89,8 +89,8 @@ app.py를 실행하세요. ```localhost```에서 서버가 런칭됩니다.
 자연어 처리 엔진으로는 기존에는 마이크로소프트의 [Language Understanding (LUIS)](https://luis.ai/)를 사용하였으나, 지금은 구글의 [Dialogflow](https://dialogflow.com/) 엔진을 이용하고 있습니다. Dialogflow 훈련 자료는 공개되어있지 않습니다.
 
 ### 데이터베이스와 유저 관리
-급식봇은 아주 멋지고 빠른~~레이턴시가 느려터진~~ [Firestore](https://cloud.google.com/firestore)를 이용해 사용자 데이터를 관리합니다.  
-유저 관리에 대해서는 더 이상은 알려고 하면 다칩니다. ~~사실 코드가 더러워서 그랬다 카더라~~  
+급식봇은 아주 멋지고 빠른 [Firestore](https://cloud.google.com/firestore)를 이용해 사용자 데이터를 관리합니다.  
+유저 관리에 대해서는 더 이상은 알려고 하면 다칩니다.  
 '급식봇 지원' 기능을 통해 버그 신고, 의견 건의 등의 기능을 구현하였습니다.
 
 ## 서버(클라우드) 인프라 구성
