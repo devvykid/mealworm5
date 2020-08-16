@@ -24,7 +24,7 @@
 급식봇으로는 전국의 초/중/고등학교의 급식, 알러지 정보 등을 페이스북 메신저 플랫폼을 통해 빠르고 쉽게 조회하실 수 있습니다.
 
 급식봇은 [비단뱀](https://www.python.org)이라는 아주 아름다운 언어, Flask 프레임워크와 Jinja2 템플릿 엔진, 그리고 Dialogflow를 이용해 만들어졌습니다.  
-2019년부터 [나이스 오픈API](https://open.neis.go.kr/portal/mainPage.do)가 개방하면서 급식 조회 시에 pyneis/schoolinfo 크롤링 기법 대신 나이스 API를 사용합니다.
+2019년부터 [나이스 오픈API](https://open.neis.go.kr/portal/mainPage.do)가 개방되면서 급식 조회 시에 pyneis/schoolinfo를 크롤링하는 기법 대신 나이스 API를 사용합니다.
 
 ## 사용법
 <a href="https://m.me/mealworm05">![Try it out on Facebook Messenger](https://img.shields.io/badge/Messenger-Try%20it%20out-%230078FF?style=for-the-badge&logo=Messenger&logoColor=%23ffffff)</a>  
